@@ -25,12 +25,27 @@
     </div>
   </header>
   <main class="app">
-    <aside id="editor">
-      <nav id="tabs"></nav>
+    <section class="stage">
+      <div class="stage-top"><div><b>PAIR SHEET</b><span>두 캐릭터의 시트를 편집해보세요.</span></div></div>
+      <nav class="utility-dock" aria-label="빠른 도구">
+        <button id="slotOpenBtn" type="button"><b>⇅</b><small>슬롯</small></button>
+      </nav>
+      <div id="sheet" class="sheet"></div>
+    </section>
+    <aside id="editor" class="inspector">
+      <div class="inspector-head"><div><small>QUICK EDIT</small><b>시트 수정</b></div><span>WeLog</span></div>
+      <nav id="tabs" class="inspector-tabs"></nav>
       <section id="controls" class="controls"></section>
     </aside>
-    <section class="stage"><div id="sheet" class="sheet"></div></section>
   </main>
+  <div class="slot-drawer" id="slotDrawer" hidden>
+    <button class="slot-backdrop" id="slotBackdrop" type="button" aria-label="슬롯 닫기"></button>
+    <section class="slot-panel">
+      <div class="slot-panel-head"><div><small>ARCHIVE</small><b>작업 슬롯</b></div><button id="slotCloseBtn" type="button">×</button></div>
+      <p>이미지를 제외한 텍스트와 설정만 저장합니다.</p>
+      <div id="slotPanel"></div>
+    </section>
+  </div>
   <script src="./script.js"></script>
 </body>
 </html>
