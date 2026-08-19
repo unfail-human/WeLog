@@ -84,3 +84,7 @@ body{color:var(--text);background:var(--work)}.topbar{background:rgba(255,255,25
 
 /* Centered slot dialog */
 .slot-panel{left:50%;top:50%;width:min(390px,calc(100% - 28px));max-height:min(680px,calc(100vh - 40px));transform:translate(-50%,-50%)}
+
+/* Wider full-body center area */
+.sheet{width:1240px}.sheet-grid{grid-template-columns:260px minmax(0,720px) 260px}.center{padding:30px 20px}.center-canvas{width:100%;max-width:680px;height:700px}.center-canvas>.pair-split{column-gap:28px!important}
+@media(max-width:1300px){.sheet{width:1160px}.sheet-grid{grid-template-columns:250px minmax(0,660px) 250px}.center-canvas{max-width:620px}.center-canvas>.pair-split{column-gap:24px!important}}
