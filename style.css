@@ -81,3 +81,6 @@ body{color:var(--text);background:var(--work)}.topbar{background:rgba(255,255,25
 
 /* True crop guide: outlined output area with a dimmed outside region */
 .image-editor-preview>#imageEditorFile{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}.crop-frame{position:absolute;left:50%;top:50%;z-index:4;display:none;transform:translate(-50%,-50%);border:2px solid rgba(255,255,255,.98);border-radius:4px;box-shadow:0 0 0 999px rgba(52,49,46,.24),0 0 0 1px rgba(45,43,40,.38);pointer-events:none}.image-editor-preview.has-image .crop-frame{display:block}.image-editor-preview.has-image{cursor:grab}.image-editor-preview.has-image.dragging{cursor:grabbing}.image-editor-preview.has-image .editor-guide{display:none!important}
+
+/* Centered slot dialog */
+.slot-panel{left:50%;top:50%;width:min(390px,calc(100% - 28px));max-height:min(680px,calc(100vh - 40px));transform:translate(-50%,-50%)}
