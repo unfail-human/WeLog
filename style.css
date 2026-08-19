@@ -111,3 +111,13 @@ body{color:var(--text);background:var(--work)}.topbar{background:rgba(255,255,25
 
 /* Commission options on the lower-left, credit on the lower-right */
 .profile.right .commission-block{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"options label" "options credit";column-gap:12px;align-items:end;text-align:right}.profile.right .commission-block>div{grid-area:options;align-self:end;justify-content:flex-start!important;margin:0}.profile.right .commission-block>small{grid-area:label;margin:0 0 4px}.profile.right .commission-block>b{grid-area:credit;max-width:112px}.profile.right .commission-block>div span{white-space:nowrap}
+
+/* Faster image editing: automatic fit plus wheel zoom */
+.image-editor-toolbar{grid-template-columns:92px 105px minmax(0,1fr)}.editor-autofit{min-height:50px;border:1px solid var(--line);border-radius:9px;background:#fff;color:#5f5a54;font-size:9px;font-weight:700;cursor:pointer}.editor-autofit:hover{background:#efede8}.image-editor-preview.has-image{overscroll-behavior:contain}
+@media(max-width:650px){.image-editor-toolbar{grid-template-columns:1fr 1fr}.editor-zoom{grid-column:1/-1}}
+
+/* Oversized editable name symbol */
+.profile-title{min-height:78px;padding-top:4px;padding-bottom:4px}.profile-symbol{font-size:70px;line-height:.82;flex:none;font-family:Georgia,"Times New Roman",serif;font-weight:400}
+
+/* Per-character soft name highlight */
+.profile-title,.profile.right .profile-title{position:relative;isolation:isolate;border:0;background:transparent}.profile-title:before{content:"";position:absolute;z-index:-1;inset:5px 3px;border-radius:12px;background:color-mix(in srgb,var(--name-highlight) 18%,white);box-shadow:0 4px 16px color-mix(in srgb,var(--name-highlight) 20%,transparent);filter:blur(3px)}.profile-symbol,.profile.right .profile-symbol{color:color-mix(in srgb,var(--name-highlight) 72%,#514c46)}.highlight-control{display:grid;grid-template-columns:1fr 54px;align-items:center;margin:-1px 0 13px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:#fff}.highlight-control>span{font-size:10px;font-weight:700;color:#6b6258}.highlight-control input{appearance:none;width:54px;height:32px;padding:0;border:0;border-radius:7px;overflow:hidden;background:transparent;cursor:pointer}.highlight-control input::-webkit-color-swatch-wrapper{padding:0}.highlight-control input::-webkit-color-swatch{border:0;border-radius:7px}.highlight-control input::-moz-color-swatch{border:0;border-radius:7px}
