@@ -12,7 +12,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="./assets/og-image.png">
   <link rel="icon" href="./assets/favicon.png">
-  <link rel="stylesheet" href="./style.css?v=20260820-31">
+  <link rel="stylesheet" href="./style.css?v=20260820-32">
 </head>
 <body>
   <header class="topbar">
@@ -21,18 +21,18 @@
       <button id="previewBtn" hidden>미리보기</button>
       <button id="saveDataBtn" hidden>저장</button>
       <label class="button" hidden>불러오기<input id="loadData" type="file" accept=".json"></label>
+      <div class="top-utility" aria-label="빠른 도구">
+        <button id="slotOpenBtn" type="button">⇅ <span>슬롯</span></button>
+        <button id="zoomOutBtn" type="button" aria-label="축소">−</button>
+        <span id="zoomValue">100%</span>
+        <button id="zoomInBtn" type="button" aria-label="확대">＋</button>
+        <button id="zoomResetBtn" type="button">초기화</button>
+      </div>
       <button class="primary" id="printBtn">↓ PNG 저장</button>
     </div>
   </header>
   <main class="app">
     <section class="stage">
-      <div class="utility-dock" aria-label="빠른 도구">
-        <div class="dock-top">
-          <button id="slotOpenBtn" type="button"><b>⇅</b><small>슬롯</small></button>
-        </div>
-        <div class="dock-zoom"><button id="zoomOutBtn" type="button">−</button><span id="zoomValue">100%</span><button id="zoomInBtn" type="button">+</button></div>
-        <button class="dock-reset" id="zoomResetBtn" type="button">초기화</button>
-      </div>
       <div id="sheet" class="sheet"></div>
     </section>
     <aside id="editor" class="inspector">
@@ -66,6 +66,6 @@
     </section>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-  <script src="./script.js?v=20260820-31"></script>
+  <script src="./script.js?v=20260820-32"></script>
 </body>
 </html>
