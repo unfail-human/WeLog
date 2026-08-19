@@ -88,3 +88,6 @@ body{color:var(--text);background:var(--work)}.topbar{background:rgba(255,255,25
 /* Wider full-body center area */
 .sheet{width:1240px}.sheet-grid{grid-template-columns:260px minmax(0,720px) 260px}.center{padding:30px 20px}.center-canvas{width:100%;max-width:680px;height:700px}.center-canvas>.pair-split{column-gap:28px!important}
 @media(max-width:1300px){.sheet{width:1160px}.sheet-grid{grid-template-columns:250px minmax(0,660px) 250px}.center-canvas{max-width:620px}.center-canvas>.pair-split{column-gap:24px!important}}
+
+/* Soft separation for pale palette colors */
+.palette-bar input,.palette-controls input{border-radius:9px;box-shadow:0 4px 12px rgba(45,43,40,.14),0 0 0 1px rgba(45,43,40,.07);filter:drop-shadow(0 2px 4px rgba(45,43,40,.05))}
