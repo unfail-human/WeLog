@@ -12,7 +12,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="./assets/og-image.png">
   <link rel="icon" href="./assets/favicon.png">
-  <link rel="stylesheet" href="./style.css?v=20260819-7">
+  <link rel="stylesheet" href="./style.css?v=20260819-8">
 </head>
 <body>
   <header class="topbar">
@@ -21,7 +21,7 @@
       <button id="previewBtn">미리보기</button>
       <button id="saveDataBtn">저장</button>
       <label class="button">불러오기<input id="loadData" type="file" accept=".json"></label>
-      <button class="primary" id="printBtn">↓ PDF 저장</button>
+      <button class="primary" id="printBtn">↓ PNG 저장</button>
     </div>
   </header>
   <main class="app">
@@ -69,6 +69,7 @@
       <div class="image-editor-actions"><button id="imageEditorReset" type="button">조정 초기화</button><button id="imageEditorRemove" type="button">이미지 삭제</button><button id="imageEditorApply" type="button">적용</button></div>
     </section>
   </div>
-  <script src="./script.js?v=20260819-7"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="./script.js?v=20260819-8"></script>
 </body>
 </html>
