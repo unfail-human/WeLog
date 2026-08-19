@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f5f4f1">
+  <title>WeLog — Pair Sheet Maker</title>
+  <meta name="description" content="두 캐릭터와 관계를 한 장에 기록하는 페어 시트 메이커 WeLog">
+  <meta property="og:title" content="WeLog — Pair Sheet Maker">
+  <meta property="og:description" content="두 캐릭터와 관계를 한 장에 기록해보세요.">
+  <meta property="og:image" content="./assets/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="./assets/og-image.png">
+  <link rel="icon" href="./assets/favicon.png">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="WeLog"><span>✦</span><b>WeLog</b><small>PAIR SHEET MAKER</small></a>
+    <div class="top-actions">
+      <button id="previewBtn">미리보기</button>
+      <button id="saveDataBtn">저장</button>
+      <label class="button">불러오기<input id="loadData" type="file" accept=".json"></label>
+      <button class="primary" id="printBtn">↓ PDF 저장</button>
+    </div>
+  </header>
+  <main class="app">
+    <aside id="editor">
+      <nav id="tabs"></nav>
+      <section id="controls" class="controls"></section>
+    </aside>
+    <section class="stage"><div id="sheet" class="sheet"></div></section>
+  </main>
+  <script src="./script.js"></script>
+</body>
+</html>
