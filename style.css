@@ -159,3 +159,11 @@ body{color:var(--text);background:var(--work)}.topbar{background:rgba(255,255,25
 /* SNS Keyboard 별과 꽃 symbol gallery */
 .symbol-picker{grid-template-columns:repeat(5,minmax(0,1fr));max-height:238px;overflow-y:auto;overscroll-behavior:contain;padding:10px;scrollbar-width:thin;scrollbar-color:#c7beb2 transparent}
 .symbol-picker button{height:40px;font-size:24px}.symbol-picker button:first-child{grid-column:span 2}
+
+/* Top utility row, taller portraits, and adjustable name symbols */
+.top-actions{align-items:center}.top-utility{display:flex;align-items:center;gap:5px;margin-right:3px;padding:3px;border:1px solid #ddd5ca;border-radius:8px;background:#f7f4ef}.top-utility button{height:28px;padding:0 9px;border:0;background:transparent;color:#625c55;border-radius:6px;font-size:10px}.top-utility button:hover{background:#fff}.top-utility button:first-child{padding:0 11px;border-right:1px solid #ded6cb;border-radius:6px 0 0 6px}.top-utility button:first-child span{margin-left:3px}.top-utility>span{min-width:35px;text-align:center;color:#8a8279;font-size:8px}
+.main-image{height:245px}
+.profile-title,.profile.right .profile-title{gap:var(--symbol-gap,7px)}
+.profile-symbol,.profile.right .profile-symbol{min-width:0;font-size:var(--symbol-size,21px)!important;line-height:1;color:var(--symbol-color,#625c55)}
+.symbol-settings{display:grid;gap:9px;margin-top:12px;padding-top:12px;border-top:1px solid #e4ddd3}.symbol-settings label{display:grid;grid-template-columns:43px minmax(0,1fr);align-items:center;gap:8px}.symbol-settings label>span{font-size:9px;font-weight:700;color:#777169}.symbol-settings input[type="range"]{width:100%;accent-color:#48423c}.symbol-settings input[type="color"]{appearance:none;width:100%;height:32px;padding:0;border:1px solid #ded7ce;border-radius:7px;overflow:hidden;background:#fff}.symbol-settings input[type="color"]::-webkit-color-swatch-wrapper{padding:0}.symbol-settings input[type="color"]::-webkit-color-swatch{border:0}.symbol-settings input[type="color"]::-moz-color-swatch{border:0}
+@media(max-width:760px){.topbar{align-items:flex-start;padding-top:8px;padding-bottom:8px}.top-actions{flex-wrap:wrap;justify-content:flex-end}.top-utility{order:2}.top-utility button:first-child span{display:none}}
