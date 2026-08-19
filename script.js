@@ -1,0 +1,43 @@
+(function(){
+  var blank=function(name,en){return{name:name,english:en,gender:"예시 젠더",age:"예시 나이",job:"예시 직업",animal:"예시 동물화",body:"예시 체형",tags:"태그1, 태그2, 태그3",image:"",subImage:"",appearanceTitle:"핵심 인상 한 줄 예시",appearance:"외관 특징 예시 1\n외관 특징 예시 2\n외관 특징 예시 3",traitTitle:"핵심 특징 한 줄 예시",traits:"핵심 특징 예시 1\n핵심 특징 예시 2\n핵심 특징 예시 3",stats:[{label:"스탯1",value:75},{label:"스탯2",value:60},{label:"스탯3",value:90}]};};
+  var initial={pairName:"PAIR NAME",catchphrase:"PAIR CONTENTS",pairText:"페어 특징 예시 내용 1\n페어 특징 예시 내용 2\n페어 특징 예시 내용 3",pairImage:"",left:blank("캐릭터 A 이름","Character A Name"),right:blank("캐릭터 B 이름","Character B Name"),leftColor:"#8b78ec",rightColor:"#d4c800",header:"#1f1d1b",paper:"#ffffff",visible:{subImage:true,tags:true,profile:true,stats:true,appearance:true,traits:true,pair:true}};
+  var saved=localStorage.getItem("welog-pair-sheet-v1"),state=saved?JSON.parse(saved):initial,tab="header";
+  var tabs=[["header","H","헤더"],["left","A","캐릭터 A"],["right","B","캐릭터 B"],["pair","♡","페어"],["image","I","이미지"],["color","C","컬러"],["omit","✓","생략"]];
+  var q=function(s){return document.querySelector(s)},esc=function(v){return String(v||"").replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})},lines=function(v){return String(v||"").split("\n").filter(Boolean)};
+  function persist(){localStorage.setItem("welog-pair-sheet-v1",JSON.stringify(state));}
+  function input(label,path,area){var value=get(path);return '<label class="control"><span>'+label+'</span>'+(area?'<textarea data-path="'+path+'">'+esc(value)+'</textarea>':'<input data-path="'+path+'" value="'+esc(value)+'">')+'</label>';}
+  function get(path){return path.split(".").reduce(function(o,k){return o[k]},state)}
+  function set(path,value){var p=path.split("."),o=state;p.slice(0,-1).forEach(function(k){o=o[k]});o[p[p.length-1]]=value;persist();renderSheet();}
+  function renderTabs(){q("#tabs").innerHTML=tabs.map(function(t){return'<button data-tab="'+t[0]+'" class="'+(tab===t[0]?"on":"")+'"><b>'+t[1]+'</b><small>'+t[2]+'</small></button>'}).join("");q("#tabs").onclick=function(e){var b=e.target.closest("button");if(b){tab=b.dataset.tab;renderTabs();renderControls();}}}
+  function renderControls(){var h="",side,p,i;
+    if(tab==="header")h='<p class="section-label">HEADER</p><h2>헤더</h2>'+input("페어명","pairName")+input("캐치프레이즈","catchphrase")+input("캐릭터 A 이름","left.name")+input("캐릭터 B 이름","right.name");
+    if(tab==="left"||tab==="right"){side=tab;p=state[side];h='<p class="section-label">CHARACTER '+(side==="left"?"A":"B")+'</p><h2>'+esc(p.name)+'</h2>'+input("이름",side+".name")+input("영문 이름",side+".english")+'<div class="two">'+input("젠더",side+".gender")+input("나이",side+".age")+input("직업",side+".job")+input("동물화",side+".animal")+input("체형",side+".body")+'</div>'+input("태그 (쉼표로 구분)",side+".tags")+'<h3>스탯</h3>';
+      for(i=0;i<3;i++)h+='<div class="stat-edit"><input data-path="'+side+'.stats.'+i+'.label" value="'+esc(p.stats[i].label)+'"><input type="range" min="0" max="100" data-path="'+side+'.stats.'+i+'.value" value="'+p.stats[i].value+'"><b>'+p.stats[i].value+'</b></div>';
+      h+=input("외관 핵심 한 줄",side+".appearanceTitle")+input("외관 특징",side+".appearance",true)+input("핵심 특징 한 줄",side+".traitTitle")+input("핵심 특징",side+".traits",true);
+    }
+    if(tab==="pair")h='<p class="section-label">PAIR</p><h2>페어 특징</h2>'+input("페어 특징 (줄바꿈으로 구분)","pairText",true);
+    if(tab==="image")h='<p class="section-label">IMAGE</p><h2>이미지</h2><p class="hint">시트 안의 이미지 칸을 클릭해 이미지를 넣으세요.</p><button class="remove" data-remove="pairImage">합본 이미지 삭제</button><button class="remove" data-remove="left">A 이미지 삭제</button><button class="remove" data-remove="right">B 이미지 삭제</button>';
+    if(tab==="color")h='<p class="section-label">COLOR</p><h2>컬러</h2>'+color("헤더","header")+color("캐릭터 A","leftColor")+color("캐릭터 B","rightColor")+color("시트 배경","paper");
+    if(tab==="omit"){var opts=[["subImage","서브 이미지"],["tags","태그"],["profile","기본 프로필"],["stats","스탯"],["appearance","외관 서술"],["traits","핵심 특징"],["pair","페어 특징"]];h='<p class="section-label">SHOW / HIDE</p><h2>표시할 항목</h2><p class="hint">체크를 해제하면 저장 결과에서도 생략됩니다.</p>'+opts.map(function(x){return'<label class="check"><input type="checkbox" data-visible="'+x[0]+'" '+(state.visible[x[0]]?"checked":"")+'><span>'+x[1]+'</span></label>'}).join("")+'<button class="reset" id="resetBtn">전체 초기화</button>';}
+    q("#controls").innerHTML=h;
+    q("#controls").oninput=function(e){if(e.target.dataset.path){var v=e.target.type==="range"?Number(e.target.value):e.target.value;set(e.target.dataset.path,v);if(e.target.type==="range")renderControls();}if(e.target.dataset.visible){state.visible[e.target.dataset.visible]=e.target.checked;persist();renderSheet();}};
+    q("#controls").onclick=function(e){var r=e.target.dataset.remove;if(r){if(r==="pairImage")state.pairImage="";else{state[r].image="";state[r].subImage="";}persist();renderSheet();}if(e.target.id==="resetBtn"&&confirm("전체 내용을 초기화할까요?")){state=JSON.parse(JSON.stringify(initial));persist();renderControls();renderSheet();}};
+  }
+  function color(label,path){return'<label class="color"><span>'+label+'</span><input type="color" data-path="'+path+'" value="'+get(path)+'"></label>'}
+  function img(path,label,cls){var v=get(path);return'<label class="img '+cls+'" data-image="'+path+'">'+(v?'<img src="'+v+'" alt="">':'<span>＋<small>'+label+'</small></span>')+'<input type="file" accept="image/*"></label>'}
+  function textBlock(no,title,bold,body){return'<div class="text-block"><h3><b>'+no+'</b>'+title+'</h3><strong>'+esc(bold)+'</strong>'+lines(body).map(function(x){return'<p>'+esc(x)+'</p>'}).join("")+'</div>'}
+  function profile(side){var p=state[side],v=state.visible,h='<article class="profile '+side+'"><div class="visual-row '+(!v.subImage?"solo":"")+'">'+(v.subImage?img(side+".subImage","서브","sub-image"):"")+img(side+".image","메인 이미지","main-image")+'</div>';
+    if(v.tags)h+='<div class="tags">'+p.tags.split(",").filter(Boolean).map(function(x){return'<span>'+esc(x.trim())+'</span>'}).join("")+'</div>';
+    if(v.profile)h+='<div class="facts"><div><span>젠더</span><b>'+esc(p.gender)+'</b></div><div><span>나이</span><b>'+esc(p.age)+'</b></div><div><span>직업</span><b>'+esc(p.job)+'</b></div><div><span>동물화</span><b>'+esc(p.animal)+'</b></div><div><span>체형</span><b>'+esc(p.body)+'</b></div></div>';
+    if(v.stats)h+='<div class="stats"><label>STATUS</label>'+p.stats.map(function(x){return'<div><span>'+esc(x.label)+'</span><i><em style="width:'+x.value+'%"></em></i><b>'+x.value+'</b></div>'}).join("")+'</div>';
+    if(v.appearance)h+=textBlock("01","외관 서술",p.appearanceTitle,p.appearance);if(v.traits)h+=textBlock("02","핵심 특징",p.traitTitle,p.traits);return h+"</article>";
+  }
+  function renderSheet(){document.documentElement.style.setProperty("--a",state.leftColor);document.documentElement.style.setProperty("--b",state.rightColor);document.documentElement.style.setProperty("--head",state.header);document.documentElement.style.setProperty("--paper",state.paper);
+    var h='<div class="sheet-head"><div><i>A</i><p><b>'+esc(state.left.name)+'</b><span>'+esc(state.left.english)+'</span></p></div><section><b>'+esc(state.pairName)+'</b><span>'+esc(state.catchphrase)+'</span></section><div class="right-name"><p><b>'+esc(state.right.name)+'</b><span>'+esc(state.right.english)+'</span></p><i>B</i></div></div><div class="sheet-grid">'+profile("left")+'<section class="center">'+img("pairImage","A+B 합본 이미지","pair-image")+(state.visible.pair?'<div class="pair-block"><h3><b>P</b>페어 특징</h3>'+lines(state.pairText).map(function(x){return'<p>'+esc(x)+'</p>'}).join("")+'</div>':"")+'</section>'+profile("right")+'</div>';
+    q("#sheet").innerHTML=h;q("#sheet").onchange=function(e){if(e.target.type==="file"){var box=e.target.closest("[data-image]"),f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(){set(box.dataset.image,r.result)};r.readAsDataURL(f);}};
+  }
+  q("#previewBtn").onclick=function(){q(".app").classList.toggle("preview");q("#previewBtn").textContent=q(".app").classList.contains("preview")?"편집하기":"미리보기"};
+  q("#printBtn").onclick=function(){window.print()};q("#saveDataBtn").onclick=function(){var b=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=(state.pairName||"WeLog")+".json";a.click();URL.revokeObjectURL(a.href)};
+  q("#loadData").onchange=function(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(){try{state=JSON.parse(r.result);persist();renderControls();renderSheet()}catch(e){alert("WeLog 저장 파일이 아닙니다.")}};r.readAsText(f)};
+  renderTabs();renderControls();renderSheet();
+})();
