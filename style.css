@@ -155,3 +155,7 @@ body{color:var(--text);background:var(--work)}.topbar{background:rgba(255,255,25
 .profile-title [contenteditable="true"]{padding:2px 4px}.text-block p[contenteditable="true"]{padding-top:2px;padding-bottom:2px}.commission-block [contenteditable="true"]{padding:3px 5px}
 .dock-top{grid-template-columns:1fr}.utility-dock .dock-top button{width:100%}
 @media(max-width:1500px){.sheet{width:1360px}.sheet-grid{grid-template-columns:295px minmax(0,770px) 295px}.center-canvas{max-width:730px}}
+
+/* SNS Keyboard 별과 꽃 symbol gallery */
+.symbol-picker{grid-template-columns:repeat(5,minmax(0,1fr));max-height:238px;overflow-y:auto;overscroll-behavior:contain;padding:10px;scrollbar-width:thin;scrollbar-color:#c7beb2 transparent}
+.symbol-picker button{height:40px;font-size:24px}.symbol-picker button:first-child{grid-column:span 2}
