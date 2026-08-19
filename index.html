@@ -55,10 +55,9 @@
     <section class="image-editor">
       <div class="image-editor-head"><div><small>IMAGE EDITOR</small><b>이미지 수정</b></div><button id="imageEditorClose" type="button">×</button></div>
       <div class="image-editor-body">
-        <div class="image-editor-preview" id="imageEditorStage"><div id="imageEditorEmpty"><b>＋</b><span>이미지를 선택해 주세요.</span></div><img id="imageEditorPreview" alt="이미지 미리보기"><i class="editor-guide guide-x"></i><i class="editor-guide guide-y"></i></div>
+        <div class="image-editor-preview" id="imageEditorStage"><label id="imageEditorEmpty"><b>＋</b><span>이미지를 선택해 주세요.</span><input id="imageEditorFile" type="file" accept="image/*"></label><img id="imageEditorPreview" alt="이미지 미리보기"><i class="editor-guide guide-x"></i><i class="editor-guide guide-y"></i></div>
         <p class="image-drag-hint">이미지를 직접 움직여 자리를 잡아주세요. 중앙에 닿으면 가이드가 나타납니다.</p>
         <div class="image-editor-toolbar">
-          <label class="image-upload"><b>이미지 선택</b><span>PNG, JPG, WEBP</span><input id="imageEditorFile" type="file" accept="image/*"></label>
           <label class="editor-bg"><span>배경색</span><input id="imageBackground" type="color" value="#fbfaf8"></label>
           <label class="editor-zoom"><span>확대</span><input id="imageScale" type="range" min="50" max="200" value="100"><b id="imageScaleValue">100%</b></label>
         </div>
@@ -67,6 +66,6 @@
     </section>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-  <script src="./script.js?v=20260819-11"></script>
+  <script src="./script.js?v=20260819-12"></script>
 </body>
 </html>
