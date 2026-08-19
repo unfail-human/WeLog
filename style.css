@@ -91,3 +91,7 @@ body{color:var(--text);background:var(--work)}.topbar{background:rgba(255,255,25
 
 /* Soft separation for pale palette colors */
 .palette-bar input,.palette-controls input{border-radius:9px;box-shadow:0 4px 12px rgba(45,43,40,.14),0 0 0 1px rgba(45,43,40,.07);filter:drop-shadow(0 2px 4px rgba(45,43,40,.05))}
+
+/* Slightly wider full-body area; portrait cards keep their size */
+.sheet{width:1280px}.sheet-grid{grid-template-columns:260px minmax(0,760px) 260px}.center-canvas{max-width:720px;height:700px}.center-canvas>.pair-split{column-gap:28px!important}.main-image{box-shadow:0 4px 12px rgba(45,43,40,.14),0 0 0 1px rgba(45,43,40,.07);filter:drop-shadow(0 2px 4px rgba(45,43,40,.05))}.image-editor-preview img{object-fit:contain!important;transform-origin:center center}
+@media(max-width:1340px){.sheet{width:1200px}.sheet-grid{grid-template-columns:250px minmax(0,700px) 250px}.center-canvas{max-width:660px}.center-canvas>.pair-split{column-gap:24px!important}}
