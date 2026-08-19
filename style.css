@@ -179,3 +179,6 @@ body{color:var(--text);background:var(--work)}.topbar{background:rgba(255,255,25
 
 /* Simple fact inputs with automatic three-column alignment */
 .plain-facts-inputs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:3px 0 16px}.plain-facts-inputs .plain-text-control{min-width:0;margin:0}.plain-facts-inputs .plain-text-control>span{text-align:center}.plain-facts-inputs input{min-width:0;height:38px;padding:7px 4px;text-align:center;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.facts{grid-template-columns:repeat(3,minmax(0,1fr))}.facts div{min-width:0;height:68px;align-items:center;justify-content:center}.facts div>span,.facts div>b{width:100%;min-width:0;text-align:center}.facts div>b{display:flex;align-items:center;justify-content:center;min-height:26px;padding:0 2px;line-height:1.25;word-break:keep-all;overflow-wrap:anywhere}
+
+/* Fixed text size, single-row formatting tools, and quote without marks */
+.rich-row-main{justify-content:flex-start}.rich-row-main .rich-align{margin-left:auto}.rich-size-value,.rich-row-sub{display:none!important}.quote{display:block}.quote-text{display:block;width:100%}
