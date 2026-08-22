@@ -52,6 +52,12 @@
   if(sheet){sheet.addEventListener('pointerdown',function(e){if(!editing)return;var k=identify(e.target);if(!k)return;select(k);if(cropMode&&k==='center')return;startDrag(e,k)},true)}
   function refresh(){ensureToolCard();applyTo(sheet);document.querySelectorAll('.welog-exact-preview-sheet').forEach(function(root){var ov=root.querySelector('.welog-layout-overlay');if(ov)ov.remove();applyTo(root)});if(!gesture)scheduleFit()}
   var pending=false;function schedule(){if(pending)return;pending=true;setTimeout(function(){pending=false;refresh()},0)}
-  if(controls)new MutationObserver(schedule).observe(controls,{childList:true,subtree:false});if(sheet)new MutationObserver(schedule).observe(sheet,{childList:true,subtree:true});
-  window.addEventListener('resize',function(){scheduleFit();if(editing)drawOverlay()});setTimeout(refresh,0);
+  /* Do not observe the sheet subtree: the editor itself appends an overlay to #sheet,
+     and observing that mutation caused a refresh loop when edit mode opened. */
+  if(controls)new MutationObserver(schedule).observe(controls,{childList:true,subtree:false});
+  document.addEventListener('input',schedule,true);
+  document.addEventListener('change',schedule,true);
+  window.addEventListener('welog-layout-state-changed',schedule);
+  window.addEventListener('resize',function(){scheduleFit();if(editing)drawOverlay()});
+  setTimeout(refresh,0);
 })();
