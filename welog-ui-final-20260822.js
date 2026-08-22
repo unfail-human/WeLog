@@ -23,8 +23,12 @@ function ensureUi(){
  var chip=document.querySelector('.welog-autosave-chip');if(!chip){chip=document.createElement('span');chip.className='welog-autosave-chip';chip.innerHTML='<i></i><span>자동 저장됨</span>';var brand=document.querySelector('.brand');if(brand)brand.insertAdjacentElement('afterend',chip)}
  var bar=document.querySelector('.welog-statusbar');if(!bar){bar=document.createElement('div');bar.className='welog-statusbar';bar.innerHTML='<div class="left"><span><i class="save-dot"></i>자동 저장 중</span><span class="welog-last-save">설정 유지됨</span></div><div class="right"><button type="button" data-welog-reset-layout>레이아웃 초기화</button><button type="button" class="danger" data-welog-reset-all>모든 설정 초기화</button></div>';document.body.appendChild(bar);bar.querySelector('[data-welog-reset-layout]').onclick=function(){localStorage.removeItem(LAYOUT_KEY);sync();window.dispatchEvent(new Event('resize'))};bar.querySelector('[data-welog-reset-all]').onclick=function(){if(confirm('WeLog의 텍스트·레이아웃 설정을 모두 초기화할까요?')){localStorage.removeItem(STATE_KEY);localStorage.removeItem(LAYOUT_KEY);location.reload()}}}
 }
-function restoreTool(){/* section-layout script recreates the tool only on main; poke it by a harmless resize/input cycle */
- if(!controls.querySelector('.welog-direct-layout-control')){window.dispatchEvent(new Event('resize'));var ev=new Event('change',{bubbles:true});controls.dispatchEvent(ev)}
+function restoreTool(){
+ if(controls.querySelector('.welog-direct-layout-control'))return;
+ var anchor=controls.querySelector('.layout-ratio-controls');
+ if(!anchor)return;
+ var box=document.createElement('section');box.className='welog-direct-layout-control';box.innerHTML='<div class="welog-direct-head"><div><b>편집 툴</b><span>시트에서 파트를 직접 선택해 조정합니다.</span></div><button type="button" data-layout-open>편집 툴 열기</button></div><p>페어명 · A+B 세트 · 중앙 그림 · OK 표시 · 커미션 출처를 직접 이동하고 크기를 조절할 수 있습니다.</p>';
+ anchor.insertAdjacentElement('afterend',box);
 }
 function persistNow(){var s=read(STATE_KEY),sel=controls.querySelector('select[data-path="font"]');if(sel){s.font=normalizeFont(sel.value);write(STATE_KEY,s)}var ls=document.querySelector('.welog-last-save');if(ls){var d=new Date();ls.textContent='마지막 저장 '+d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}}
 var sheetObs=new MutationObserver(function(muts){var child=muts.some(function(m){return m.type==='childList'});if(child)sync()});sheetObs.observe(sheet,{childList:true,subtree:true});
