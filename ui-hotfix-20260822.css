@@ -1,0 +1,23 @@
+/* 2026-08-22 — secondary labels + dual character concepts */
+
+/* Separate notation should follow the surrounding typography instead of keeping its own color. */
+#sheet .pair-title-display small{
+  margin-top:7px;
+  font-size:12px!important;
+  line-height:1.45!important;
+  color:inherit!important;
+  opacity:.68;
+}
+#sheet .profile-subtitle{
+  font-size:12px!important;
+  line-height:1.4!important;
+  color:inherit!important;
+  opacity:.68;
+}
+
+/* Color controls for secondary notation are intentionally removed. */
+.character-meta-editor .meta-color-row{display:none!important}
+
+/* Dual concept blocks share the same visual language as the original concept block. */
+#sheet .concept-block[data-hotfix-concept]{display:block}
+#sheet .concept-block[data-hotfix-concept] .formatted-lines{white-space:pre-wrap}
