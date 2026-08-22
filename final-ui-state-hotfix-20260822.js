@@ -1,0 +1,14 @@
+(function(){'use strict';
+var STATE_KEY='welog-pair-sheet-v4',STICKER_KEY='welog-direct-stickers-v1';
+var sheet=document.getElementById('sheet'),controls=document.getElementById('controls');if(!sheet)return;
+function state(){try{return JSON.parse(localStorage.getItem(STATE_KEY)||'{}')||{}}catch(e){return{}}}
+function applyNameAlign(){var s=state(),ts=s.textStyles||{};[['left','.profile.left'],['right','.profile.right']].forEach(function(x){var side=x[0],root=sheet.querySelector(x[1]);if(!root)return;var a=(ts[side+'.name']&&ts[side+'.name'].align)||'center';var title=root.querySelector('.profile-title');var name=title&&title.querySelector('b');var alt=title&&title.querySelector('span');if(title)title.style.setProperty('text-align',a,'important');if(name){name.style.setProperty('text-align',a,'important');name.style.setProperty('width','100%','important')}if(alt){alt.style.setProperty('text-align',a,'important');alt.style.setProperty('display','block','important');alt.style.setProperty('width','100%','important')}})}
+function readStickers(){try{var a=JSON.parse(localStorage.getItem(STICKER_KEY)||'[]');return Array.isArray(a)?a:[]}catch(e){return[]}}
+function stickerMarkup(s,i){var locked=!!s.locked;return '<div class="direct-sticker'+(locked?' is-locked':'')+'" data-i="'+i+'" tabindex="0" style="left:'+(isFinite(+s.x)?+s.x:50)+'%;top:'+(isFinite(+s.y)?+s.y:50)+'%;width:'+(isFinite(+s.w)?+s.w:120)+'px;transform:translate(-50%,-50%) rotate('+(isFinite(+s.rot)?+s.rot:0)+'deg)"><img draggable="false" src="'+String(s.src||'').replace(/"/g,'&quot;')+'"><div class="st-toolbar"><button class="st-lock">'+(locked?'🔒':'🔓')+'</button><label>크기 <input class="st-size" type="range" min="20" max="600" value="'+(isFinite(+s.w)?+s.w:120)+'"></label><label>회전 <input class="st-rot" type="range" min="-180" max="180" value="'+(isFinite(+s.rot)?+s.rot:0)+'"></label><button class="st-del">×</button></div><i class="st-resize"></i><i class="st-rotate"></i></div>'}
+function restoreStickers(){var arr=readStickers();if(!arr.length)return;var layer=sheet.querySelector('.direct-sticker-layer');if(!layer){layer=document.createElement('div');layer.className='direct-sticker-layer';sheet.appendChild(layer)}if(layer.querySelectorAll('.direct-sticker').length===arr.length)return;layer.innerHTML=arr.map(stickerMarkup).join('');window.dispatchEvent(new CustomEvent('welog-stickers-restored'))}
+var raf=0;function sync(){if(raf)return;raf=requestAnimationFrame(function(){raf=0;applyNameAlign();restoreStickers()})}
+if(controls)controls.addEventListener('click',function(e){if(e.target&&e.target.matches('[data-style-align]'))setTimeout(sync,20)},true);
+document.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('#tabs'))setTimeout(sync,40)},true);
+new MutationObserver(function(){sync()}).observe(sheet,{childList:true,subtree:true});
+window.addEventListener('pageshow',sync);sync();
+})();
