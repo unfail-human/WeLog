@@ -1,0 +1,9 @@
+(function(){'use strict';
+var KEY='welog-split-area-size';
+function clamp(v){v=Number(v)||100;return Math.max(55,Math.min(100,v))}
+function apply(v){v=clamp(v);document.documentElement.style.setProperty('--welog-split-size',v+'%');document.documentElement.style.setProperty('--welog-split-min-h',Math.round(420*v/100)+'px');try{localStorage.setItem(KEY,String(v))}catch(e){};var out=document.querySelector('[data-welog-split-output]');if(out)out.textContent=v+'%'}
+function currentModeSplit(){var checked=document.querySelector('input[name="centerMode"]:checked');return !!(checked&&checked.dataset.centerMode==='split')}
+function ensure(){var controls=document.getElementById('controls');if(!controls)return;var row=controls.querySelector('.center-mode-check');var box=controls.querySelector('.welog-split-area-control');if(!row){if(box)box.hidden=true;return}if(!box){box=document.createElement('section');box.className='welog-split-area-control';box.innerHTML='<div class="welog-split-head"><b>분리 중앙 이미지 영역</b><span>두 이미지 전체 크기</span></div><div class="welog-split-row"><input type="range" min="55" max="100" step="1" data-welog-split-range><output data-welog-split-output></output></div><small>이미지 두 장 사이 간격은 최소로 유지하고, 전체 중앙 영역만 줄이거나 키웁니다.</small>';row.insertAdjacentElement('afterend',box);var r=box.querySelector('[data-welog-split-range]');r.value=clamp(localStorage.getItem(KEY)||100);r.addEventListener('input',function(){apply(this.value)});apply(r.value)}box.hidden=!currentModeSplit();}
+var controls=document.getElementById('controls');if(controls){new MutationObserver(function(){ensure()}).observe(controls,{childList:true,subtree:false})}
+document.addEventListener('change',function(e){if(e.target&&e.target.name==='centerMode')setTimeout(ensure,0)},true);document.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('#tabs'))setTimeout(ensure,0)},true);apply(localStorage.getItem(KEY)||100);ensure();
+})();
