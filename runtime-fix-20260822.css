@@ -1,6 +1,13 @@
-/* Larger secondary labels */
-.pair-title-display{padding-bottom:14px!important}
-.pair-title-display small{font-size:14px!important;line-height:1.45!important;margin-top:8px!important;font-weight:500!important;color:#817b74!important;letter-spacing:.02em!important}
-.pair-title-display::after{content:"";display:block;width:min(210px,42%);height:1px;margin:14px auto 0;background:linear-gradient(90deg,transparent,#cfc7bd 18%,#bdb4a8 50%,#cfc7bd 82%,transparent)}
-#sheet .profile-subtitle{font-size:13px!important;line-height:1.45!important;margin-top:2px!important;font-weight:500!important;color:#817b74!important;letter-spacing:.01em!important}
+/* Runtime layout refinements */
+.pair-title-display{padding:18px 32px 8px!important}
+.pair-title-display b{position:relative;padding-bottom:14px!important}
+.pair-title-display b::after{content:"";position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:min(430px,72%);height:1px;background:linear-gradient(90deg,transparent,#c7beb3 10%,#b8aea2 50%,#c7beb3 90%,transparent)}
+.pair-title-display::after{display:none!important}
+.pair-title-display small{font-size:14px!important;line-height:1.4!important;margin-top:9px!important;font-weight:500!important;color:#817b74!important;letter-spacing:.02em!important}
+#sheet .profile-subtitle{font-size:13px!important;line-height:1.4!important;margin-top:3px!important;font-weight:500!important;color:#817b74!important;letter-spacing:.01em!important}
 .character-meta-editor .meta-color-row{display:none!important}
+/* Slightly smaller physical card while preserving its internal proportions. */
+#sheet.sheet{width:1060px!important;min-height:736px!important}
+#sheet .profile{padding:21px!important}
+#sheet .center{padding:30px 38px!important}
+@media(max-width:950px){#sheet.sheet{width:1000px!important}}
