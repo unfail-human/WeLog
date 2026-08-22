@@ -1,5 +1,16 @@
 /* Runtime layout refinements */
-:root{--welog-side-padding:0px}
+:root{--welog-card-padding:0px}
+html,body{min-height:100%;overflow:auto!important}
+.app{grid-template-columns:minmax(0,1fr) 310px!important;min-height:calc(100vh - 54px)!important;align-items:start!important}
+.stage{display:block!important;min-width:0!important;min-height:calc(100vh - 54px)!important;overflow:auto!important;padding:32px!important;background:#fff!important}
+#sheet.sheet{width:calc(1060px + (var(--welog-card-padding) * 2))!important;min-height:calc(736px + (var(--welog-card-padding) * 2))!important;padding:var(--welog-card-padding)!important;box-sizing:border-box!important;margin:0 auto!important;flex:none!important}
+#sheet .sheet-grid{width:1060px!important;max-width:1060px!important;margin:0 auto!important}
+#sheet .profile{padding:21px!important}
+#sheet .center{padding:30px 38px!important}
+.inspector{min-height:0!important;max-height:calc(100vh - 54px)!important;overflow:hidden!important}
+.inspector-tabs,.controls{min-height:0!important}.controls{overflow-y:auto!important;overscroll-behavior:contain!important}
+.app.preview{display:block!important}.app.preview .inspector{display:none!important}.app.preview .stage{min-height:calc(100vh - 54px)!important;padding:32px!important}.app.preview #sheet.sheet{margin-left:auto!important;margin-right:auto!important}
+
 .pair-title-display{padding:18px 32px 8px!important}
 .pair-title-display b{position:relative;padding-bottom:14px!important}
 .pair-title-display b::after{content:"";position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:min(430px,72%);height:1px;background:linear-gradient(90deg,transparent,#c7beb3 10%,#b8aea2 50%,#c7beb3 90%,transparent)}
@@ -7,13 +18,9 @@
 .pair-title-display small{font-size:14px!important;line-height:1.4!important;margin-top:9px!important;font-weight:500!important;color:#817b74!important;letter-spacing:.02em!important}
 #sheet .profile-subtitle{font-size:13px!important;line-height:1.4!important;margin-top:3px!important;font-weight:500!important;color:#817b74!important;letter-spacing:.01em!important}
 .character-meta-editor .meta-color-row{display:none!important}
-/* Keep the current inner three-column width and add only blank space at both sides. */
-#sheet.sheet{width:calc(1060px + (var(--welog-side-padding) * 2))!important;min-height:736px!important;padding-left:var(--welog-side-padding)!important;padding-right:var(--welog-side-padding)!important;box-sizing:border-box!important}
-#sheet .sheet-grid{width:1060px!important;max-width:1060px!important;margin-left:auto!important;margin-right:auto!important}
-#sheet .profile{padding:21px!important}
-#sheet .center{padding:30px 38px!important}
-.welog-side-padding-control{margin:14px 0 18px;padding:12px 13px;border:1px solid #ddd5ca;border-radius:10px;background:#fff}
-.welog-side-padding-control>div{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-bottom:9px}
-.welog-side-padding-control>div b{font-size:11px;color:#514b44}.welog-side-padding-control>div span{font-size:8px;color:#948c82;text-align:right}
-.welog-side-padding-control label{display:grid;grid-template-columns:1fr 54px;gap:9px;align-items:center}.welog-side-padding-control input{width:100%}.welog-side-padding-control label>b{font-size:9px;color:#736b62;text-align:right}
-@media(max-width:950px){#sheet.sheet{width:calc(1060px + (var(--welog-side-padding) * 2))!important}}
+
+.welog-card-padding-control{margin:14px 0 18px;padding:12px 13px;border:1px solid #ddd5ca;border-radius:10px;background:#fff}
+.welog-card-padding-control>div{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-bottom:9px}
+.welog-card-padding-control>div b{font-size:11px;color:#514b44}.welog-card-padding-control>div span{font-size:8px;color:#948c82;text-align:right}
+.welog-card-padding-control label{display:grid;grid-template-columns:1fr 54px;gap:9px;align-items:center}.welog-card-padding-control input{width:100%}.welog-card-padding-control label>b{font-size:9px;color:#736b62;text-align:right}
+@media(max-width:950px){.app{display:block!important}.inspector{position:relative!important;top:0!important;width:100%!important;max-height:none!important}.stage{padding:15px!important}#sheet.sheet{margin:0 auto!important}}
