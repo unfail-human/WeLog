@@ -1,0 +1,46 @@
+/* WeLog final UI layer — clean warm editor, persistent sheet typography/layout */
+:root{
+  --welog-ui-font:Pretendard,"Noto Sans KR",Arial,sans-serif;
+  --welog-work:#e7e1d8;
+  --welog-panel:#f7f3ed;
+  --welog-card:#fffdfa;
+  --welog-line:#e4ddd3;
+  --welog-text:#2e2923;
+  --welog-muted:#958b80;
+  --welog-accent:#3b3025;
+  --welog-sheet-font:"WeLogMasterPretendard",sans-serif;
+  --welog-inspector-w:330px;
+}
+html,body{background:var(--welog-work)!important;color:var(--welog-text)!important;font-family:var(--welog-ui-font)!important}
+body{margin:0!important}
+/* top header */
+.topbar{height:58px!important;min-height:58px!important;padding:0 20px!important;display:flex!important;align-items:center!important;justify-content:space-between!important;background:rgba(250,247,242,.97)!important;border-bottom:1px solid #ddd5ca!important;box-shadow:0 1px 0 rgba(255,255,255,.8)!important;position:relative!important;z-index:80!important}
+.brand{gap:9px!important;color:#352b22!important;font-family:var(--welog-ui-font)!important}.brand span{display:grid!important;place-items:center!important;width:30px!important;height:30px!important;border-radius:50%!important;background:#e9dfcf!important;color:#7a6448!important}.brand b{font-size:17px!important;font-weight:800!important}.brand small{font-family:var(--welog-ui-font)!important;font-size:7px!important;letter-spacing:.16em!important;color:#a4988b!important}
+.top-actions{display:flex!important;align-items:center!important;gap:8px!important}.top-actions button,.top-actions .button{height:34px!important;padding:0 12px!important;border:1px solid #ddd4c8!important;border-radius:8px!important;background:#fffdfa!important;color:#554b42!important;font-size:10px!important;box-shadow:0 2px 8px rgba(78,65,50,.05)!important}.top-actions .primary{background:#352c24!important;color:#fff!important;border-color:#352c24!important;font-weight:700!important}.top-utility{display:flex!important;align-items:center!important;gap:2px!important;padding:2px!important;border:1px solid #ddd4c8!important;border-radius:9px!important;background:#f3eee7!important}.top-utility button{border:0!important;background:transparent!important;box-shadow:none!important;padding:0 8px!important}.top-utility span{min-width:42px!important;text-align:center!important;font-size:9px!important;color:#766b60!important}
+.welog-autosave-chip{display:flex;align-items:center;gap:5px;margin-left:4px;font-size:9px;color:#6c7766;white-space:nowrap}.welog-autosave-chip i{width:8px;height:8px;border-radius:50%;background:#3f9e61;box-shadow:0 0 0 3px rgba(63,158,97,.11)}
+/* workspace + inspector */
+.app{height:calc(100vh - 58px)!important;min-height:0!important;overflow:hidden!important;padding:0!important;background:var(--welog-work)!important}
+.stage{width:calc(100vw - var(--welog-inspector-w))!important;height:100%!important;margin:0 var(--welog-inspector-w) 0 0!important;padding:26px 28px 82px!important;box-sizing:border-box!important;display:flex!important;justify-content:center!important;align-items:flex-start!important;overflow:auto!important;background:var(--welog-work)!important;scrollbar-gutter:stable both-edges!important}
+.inspector{position:fixed!important;right:0!important;top:58px!important;bottom:0!important;width:var(--welog-inspector-w)!important;height:auto!important;display:flex!important;flex-direction:column!important;background:#f9f6f1!important;border-left:1px solid #d9d0c5!important;box-shadow:-12px 0 34px rgba(74,61,48,.07)!important;z-index:70!important;overflow:hidden!important}
+.inspector-head{padding:18px 18px 14px!important;background:#f9f6f1!important;border-bottom:0!important}.inspector-head small{font-size:7px!important;letter-spacing:.16em!important;color:#a09284!important}.inspector-head b{display:block!important;margin-top:3px!important;font-size:16px!important;font-weight:800!important}.inspector-head>span{display:none!important}
+.inspector-tabs{display:grid!important;grid-template-columns:repeat(3,1fr)!important;gap:6px!important;padding:0 14px 12px!important;background:#f9f6f1!important;border-bottom:1px solid var(--welog-line)!important}.inspector-tabs button{height:36px!important;border:1px solid #ded5ca!important;border-radius:8px!important;background:#fffdfa!important;color:#6e655d!important;display:flex!important;flex-direction:row!important;gap:5px!important;align-items:center!important;justify-content:center!important;font-size:9px!important}.inspector-tabs button.on{background:#3a3129!important;color:#fff!important;border-color:#3a3129!important;box-shadow:0 4px 14px rgba(58,49,41,.12)!important}.inspector-tabs button b{font-family:var(--welog-ui-font)!important}
+.controls{flex:1 1 auto!important;min-height:0!important;overflow:auto!important;padding:14px 14px 110px!important;background:#f9f6f1!important;scrollbar-gutter:stable!important}
+.controls>section,.controls>.select,.controls>.control,.controls>.two,.controls>.hint,.controls>.palette-controls,.controls>.mode-switch,.controls>.pair-color-row,.controls>.layout-ratio-controls,.controls>.welog-direct-layout-control{border:1px solid #e1d8cd!important;background:#fffdfa!important;border-radius:12px!important;padding:13px!important;margin:0 0 12px!important;box-shadow:0 4px 16px rgba(72,58,44,.035)!important}.controls h3{font-size:11px!important;margin:16px 0 8px!important;color:#473e35!important}.controls .control,.controls .select{display:block!important}.controls input,.controls textarea,.controls select{border:1px solid #ded5ca!important;background:#fff!important;border-radius:8px!important;color:#40372f!important}.controls input:focus,.controls textarea:focus,.controls select:focus{outline:2px solid rgba(138,113,82,.14)!important;border-color:#aa9275!important}.controls label>span{color:#74695e!important}.controls button{border-radius:8px!important}
+/* sheet card */
+#sheet.sheet{border:1px solid rgba(221,214,205,.9)!important;border-radius:17px!important;background:#fff!important;box-shadow:0 20px 60px rgba(74,61,48,.12)!important;overflow:visible!important;font-family:var(--welog-sheet-font)!important}
+#sheet,#sheet *{font-family:var(--welog-sheet-font)!important}
+/* slightly relax A/B profile internals from the previous compact pass */
+#sheet .profile .quote{margin-top:14px!important;margin-bottom:13px!important}
+#sheet .profile .facts div{padding-top:8px!important;padding-bottom:8px!important}
+#sheet .profile .text-block{margin-top:14px!important}
+#sheet .profile .text-block h3{margin-bottom:8px!important}
+#sheet .profile .text-block p{margin-top:5px!important;margin-bottom:5px!important}
+#sheet .profile .text-block + .text-block{margin-top:16px!important}
+/* edit tool panel matching the new UI */
+.welog-direct-layout-control{padding:0!important;overflow:hidden!important}.welog-direct-head{padding:13px!important;align-items:center!important}.welog-direct-head b{font-size:12px!important}.welog-direct-head span{font-size:8px!important}.welog-direct-head button{height:32px!important;padding:0 10px!important;background:#fff!important}.welog-direct-layout-control p{padding:0 13px 13px!important;margin:0!important;color:#93877b!important}
+.welog-layout-hud{left:calc((100vw - var(--welog-inspector-w))/2)!important;bottom:18px!important;transform:translateX(-50%)!important;border:1px solid #dcd2c6!important;border-radius:13px!important;background:rgba(255,252,247,.97)!important;box-shadow:0 16px 45px rgba(60,48,37,.16)!important}.welog-layout-hud button{height:32px!important;border-radius:8px!important;background:#fff!important}.welog-layout-hud button[data-done]{background:#352c24!important;color:#fff!important}
+/* status footer */
+.welog-statusbar{position:fixed;left:0;right:var(--welog-inspector-w);bottom:0;height:42px;z-index:55;display:flex;align-items:center;justify-content:space-between;padding:0 22px;background:rgba(249,246,241,.96);border-top:1px solid #ddd5ca;backdrop-filter:blur(8px);font-family:var(--welog-ui-font);font-size:9px;color:#8b8177}.welog-statusbar .left,.welog-statusbar .right{display:flex;align-items:center;gap:14px}.welog-statusbar .save-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#37a35a;margin-right:5px}.welog-statusbar button{height:28px;padding:0 10px;border:1px solid #dbd1c5;border-radius:7px;background:#fffdfa;color:#6d6257;font-size:9px}.welog-statusbar button.danger{border-color:#d9a79e;color:#a25b50;background:#fffaf9}
+/* Keep preview/export consistent */
+.welog-preview-sheet,.welog-preview-sheet *,.welog-exact-preview-sheet,.welog-exact-preview-sheet *,.welog-master-export,.welog-master-export *{font-family:var(--welog-sheet-font)!important}
+@media(max-width:950px){:root{--welog-inspector-w:0px}.app{height:auto!important;overflow:visible!important}.stage{width:100%!important;height:auto!important;margin:0!important;padding:18px 12px 70px!important}.inspector{position:relative!important;top:auto!important;width:100%!important;height:auto!important}.welog-statusbar{right:0}.welog-layout-hud{left:50%!important}}
