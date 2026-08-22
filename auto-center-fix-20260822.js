@@ -1,34 +1,27 @@
 (function(){
   'use strict';
-  var sheet=document.getElementById('sheet'), timer=0, running=false;
+  var sheet=document.getElementById('sheet'),timer=0,busy=false;
   if(!sheet)return;
-  function majorRects(root){
-    var sels=['.pair-title-display','.profile.left','.center','.profile.right','.sheet-commission-footer'];
-    return sels.map(function(s){return root.querySelector(s)}).filter(Boolean).map(function(el){return el.getBoundingClientRect()}).filter(function(r){return r.width&&r.height});
-  }
-  function balance(root){
-    if(!root||running)return;
-    running=true;
-    root.style.setProperty('--welog-safe-top','0px');
-    root.style.setProperty('--welog-safe-bottom','0px');
+  function nodes(root){return['.pair-title-display','.profile.left','.center','.profile.right'].map(function(s){return root.querySelector(s)}).filter(Boolean)}
+  function trim(root,second){
+    if(!root||busy)return;busy=true;
+    root.style.setProperty('--welog-safe-top','0px');root.style.setProperty('--welog-safe-bottom','0px');
+    root.style.setProperty('min-height','0px','important');root.style.removeProperty('height');
     requestAnimationFrame(function(){
-      var sr=root.getBoundingClientRect(), rs=majorRects(root);
-      if(!rs.length){running=false;return}
-      var top=Math.min.apply(null,rs.map(function(r){return r.top}));
+      var rr=root.getBoundingClientRect(),scale=rr.height/(root.offsetHeight||rr.height||1),rs=nodes(root).map(function(n){return n.getBoundingClientRect()}).filter(function(r){return r.width&&r.height});
+      if(!rs.length){busy=false;return}
       var bottom=Math.max.apply(null,rs.map(function(r){return r.bottom}));
-      var pad=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--welog-pad-y'))||0;
-      var needTop=Math.max(0,Math.ceil((sr.top+pad)-top));
-      var needBottom=Math.max(0,Math.ceil(bottom-(sr.bottom-pad)));
-      var safe=Math.max(needTop,needBottom);
-      root.style.setProperty('--welog-safe-top',safe+'px');
-      root.style.setProperty('--welog-safe-bottom',safe+'px');
-      running=false;
+      var footer=root.querySelector('.sheet-commission-footer'),footerH=footer?footer.getBoundingClientRect().height/Math.max(scale,.001):0;
+      var target=Math.ceil((bottom-rr.top)/Math.max(scale,.001)+Math.max(24,footerH+20));
+      target=Math.max(260,target);
+      root.style.setProperty('height',target+'px','important');
+      busy=false;
+      if(second!==false)setTimeout(function(){trim(root,false)},24);
     });
   }
-  function schedule(){clearTimeout(timer);timer=setTimeout(function(){balance(sheet);document.querySelectorAll('.welog-exact-preview-sheet').forEach(balance)},30)}
-  new MutationObserver(schedule).observe(sheet,{childList:true,subtree:true,attributes:true,attributeFilter:['style','class']});
+  function schedule(){clearTimeout(timer);timer=setTimeout(function(){trim(sheet,true);document.querySelectorAll('.welog-exact-preview-sheet').forEach(function(r){trim(r,true)})},28)}
+  new MutationObserver(schedule).observe(sheet,{childList:true,subtree:true});
   window.addEventListener('resize',schedule);
-  document.addEventListener('input',schedule,true);
-  document.addEventListener('change',schedule,true);
-  setTimeout(schedule,80);
+  ['input','change','pointerup'].forEach(function(ev){document.addEventListener(ev,schedule,true)});
+  setTimeout(schedule,90);
 })();
