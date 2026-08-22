@@ -1,0 +1,18 @@
+/* Compact the vertical spacing inside A/B character profile text areas.
+   Keep typography and content intact; only reduce the large gaps visible
+   between quote -> facts -> appearance -> concept. */
+#sheet .profile .quote{margin-top:12px!important;margin-bottom:10px!important}
+#sheet .profile .facts{margin-top:0!important;margin-bottom:0!important}
+#sheet .profile .facts div{padding-top:7px!important;padding-bottom:7px!important}
+#sheet .profile .text-block{margin-top:11px!important;margin-bottom:0!important}
+#sheet .profile .text-block h3{margin-top:0!important;margin-bottom:7px!important}
+#sheet .profile .text-block p{margin-top:4px!important;margin-bottom:4px!important}
+#sheet .profile .text-block + .text-block{margin-top:13px!important}
+/* Same spacing in preview/export clones. */
+.welog-preview-sheet .profile .quote,.welog-exact-preview-sheet .profile .quote{margin-top:12px!important;margin-bottom:10px!important}
+.welog-preview-sheet .profile .facts,.welog-exact-preview-sheet .profile .facts{margin-top:0!important;margin-bottom:0!important}
+.welog-preview-sheet .profile .facts div,.welog-exact-preview-sheet .profile .facts div{padding-top:7px!important;padding-bottom:7px!important}
+.welog-preview-sheet .profile .text-block,.welog-exact-preview-sheet .profile .text-block{margin-top:11px!important;margin-bottom:0!important}
+.welog-preview-sheet .profile .text-block h3,.welog-exact-preview-sheet .profile .text-block h3{margin-top:0!important;margin-bottom:7px!important}
+.welog-preview-sheet .profile .text-block p,.welog-exact-preview-sheet .profile .text-block p{margin-top:4px!important;margin-bottom:4px!important}
+.welog-preview-sheet .profile .text-block + .text-block,.welog-exact-preview-sheet .profile .text-block + .text-block{margin-top:13px!important}
