@@ -1,40 +1,27 @@
 (function(){
 'use strict';
-var STATE_KEY='welog-pair-sheet-v4',LAYOUT_KEY='welog-section-layout-v2';
+var STATE_KEY='welog-pair-sheet-v4',LAYOUT_KEY='welog-section-layout-v2',FONT_KEY='welog-font-lock-v1';
 var sheet=document.getElementById('sheet'),controls=document.getElementById('controls'),tabs=document.getElementById('tabs');if(!sheet||!controls)return;
-var fonts={
- 'Pretendard':'"WeLogMasterPretendard",sans-serif',
- 'Noto Sans KR':'"WeLogMasterNoto",sans-serif',
- 'KoPub Dotum Medium':'"WeLogMasterDotum",sans-serif',
- 'KoPub Batang Medium':'"WeLogMasterBatang",serif'
-};
+var fonts={'Pretendard':'"WeLogMasterPretendard",sans-serif','Noto Sans KR':'"WeLogMasterNoto",sans-serif','KoPub Dotum Medium':'"WeLogMasterDotum",sans-serif','KoPub Batang Medium':'"WeLogMasterBatang",serif'};
 function read(k){try{return JSON.parse(localStorage.getItem(k)||'{}')||{}}catch(e){return{}}}
 function write(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){console.error(e);return false}}
 function normalizeFont(v){if(/^KoPub Dotum/.test(v||''))return'KoPub Dotum Medium';if(/^KoPub Batang/.test(v||''))return'KoPub Batang Medium';if(!v||v==='__default__')return'Pretendard';return v}
-function currentFont(){var s=read(STATE_KEY),sel=controls.querySelector('select[data-path="font"]');return normalizeFont((sel&&sel.value)||s.font||'Pretendard')}
-function fontStack(){var n=currentFont();return fonts[n]||('"'+String(n).replace(/"/g,'')+'","Noto Sans KR",sans-serif')}
-function applyFont(root){if(!root)return;var f=fontStack();root.style.setProperty('--welog-sheet-font',f);root.style.setProperty('font-family',f,'important');root.querySelectorAll('*').forEach(function(el){el.style.setProperty('font-family',f,'important')})}
+function lockedFont(){var v=localStorage.getItem(FONT_KEY);if(v)return normalizeFont(v);var s=read(STATE_KEY),f=normalizeFont(s.font||'Pretendard');localStorage.setItem(FONT_KEY,f);return f}
+function setLockedFont(v){v=normalizeFont(v);localStorage.setItem(FONT_KEY,v);var s=read(STATE_KEY);s.font=v;write(STATE_KEY,s);return v}
+function fontStack(){var n=lockedFont();return fonts[n]||('"'+String(n).replace(/"/g,'')+'","Noto Sans KR",sans-serif')}
+function applyFont(root){if(!root)return;var f=fontStack();root.style.setProperty('--welog-master-sheet-font',f,'important');root.style.setProperty('--welog-sheet-font',f,'important');root.style.setProperty('font-family',f,'important');root.querySelectorAll('*').forEach(function(el){el.style.setProperty('font-family',f,'important')})}
 function layoutDefaults(){return{pair:{scale:100,x:0,y:0},characters:{scale:100,x:0,y:0},center:{scale:100,x:0,y:0,crop:{top:0,right:0,bottom:0,left:0}},ok:{scale:100,x:0,y:0},credit:{scale:100,x:0,y:0}}}
 function layout(){var d=layoutDefaults(),s=read(LAYOUT_KEY);Object.keys(d).forEach(function(k){if(!s[k])return;d[k].scale=Math.max(55,Math.min(170,+s[k].scale||100));d[k].x=Math.max(-420,Math.min(420,+s[k].x||0));d[k].y=Math.max(-420,Math.min(420,+s[k].y||0));if(k==='center'&&s[k].crop)d[k].crop={top:+s[k].crop.top||0,right:+s[k].crop.right||0,bottom:+s[k].crop.bottom||0,left:+s[k].crop.left||0}});return d}
 function ensureFooter(root){var block=root.querySelector('.sheet-commission-footer .commission-block');if(!block)return;var ok=block.querySelector('.welog-ok-zone');if(!ok){var d=Array.from(block.children).find(function(x){return x.tagName==='DIV'&&!x.classList.contains('welog-credit-zone')});if(d)d.classList.add('welog-ok-zone')}if(!block.querySelector('.welog-credit-zone')){var cr=document.createElement('div');cr.className='welog-credit-zone';var sm=Array.from(block.children).find(function(x){return x.tagName==='SMALL'}),b=Array.from(block.children).find(function(x){return x.tagName==='B'});if(sm)cr.appendChild(sm);if(b)cr.appendChild(b);block.appendChild(cr)}}
 function applyLayout(root){if(!root)return;ensureFooter(root);var s=layout(),map={pair:[root.querySelector('.pair-title-display')],characters:[root.querySelector('.profile.left'),root.querySelector('.profile.right')],center:[root.querySelector('.center')],ok:[root.querySelector('.welog-ok-zone')],credit:[root.querySelector('.welog-credit-zone')]};Object.keys(map).forEach(function(k){map[k].filter(Boolean).forEach(function(el){var d=s[k];el.dataset.welogLayoutPart=k;el.style.setProperty('transform','translate('+d.x+'px,'+d.y+'px) scale('+(d.scale/100)+')','important');el.style.setProperty('transform-origin','center center','important');if(k==='center'){var c=d.crop||{};el.style.setProperty('clip-path','inset('+(c.top||0)+'% '+(c.right||0)+'% '+(c.bottom||0)+'% '+(c.left||0)+'%)','important')}})})}
-var syncing=false;function sync(){if(syncing)return;syncing=true;requestAnimationFrame(function(){applyFont(sheet);applyLayout(sheet);syncing=false})}
-function ensureUi(){
- var chip=document.querySelector('.welog-autosave-chip');if(!chip){chip=document.createElement('span');chip.className='welog-autosave-chip';chip.innerHTML='<i></i><span>자동 저장됨</span>';var brand=document.querySelector('.brand');if(brand)brand.insertAdjacentElement('afterend',chip)}
- var bar=document.querySelector('.welog-statusbar');if(!bar){bar=document.createElement('div');bar.className='welog-statusbar';bar.innerHTML='<div class="left"><span><i class="save-dot"></i>자동 저장 중</span><span class="welog-last-save">설정 유지됨</span></div><div class="right"><button type="button" data-welog-reset-layout>레이아웃 초기화</button><button type="button" class="danger" data-welog-reset-all>모든 설정 초기화</button></div>';document.body.appendChild(bar);bar.querySelector('[data-welog-reset-layout]').onclick=function(){localStorage.removeItem(LAYOUT_KEY);sync();window.dispatchEvent(new Event('resize'))};bar.querySelector('[data-welog-reset-all]').onclick=function(){if(confirm('WeLog의 텍스트·레이아웃 설정을 모두 초기화할까요?')){localStorage.removeItem(STATE_KEY);localStorage.removeItem(LAYOUT_KEY);location.reload()}}}
-}
-function restoreTool(){
- if(controls.querySelector('.welog-direct-layout-control'))return;
- var anchor=controls.querySelector('.layout-ratio-controls');
- if(!anchor)return;
- var box=document.createElement('section');box.className='welog-direct-layout-control';box.innerHTML='<div class="welog-direct-head"><div><b>편집 툴</b><span>시트에서 파트를 직접 선택해 조정합니다.</span></div><button type="button" data-layout-open>편집 툴 열기</button></div><p>페어명 · A+B 세트 · 중앙 그림 · OK 표시 · 커미션 출처를 직접 이동하고 크기를 조절할 수 있습니다.</p>';
- anchor.insertAdjacentElement('afterend',box);
-}
-function persistNow(){var s=read(STATE_KEY),sel=controls.querySelector('select[data-path="font"]');if(sel){s.font=normalizeFont(sel.value);write(STATE_KEY,s)}var ls=document.querySelector('.welog-last-save');if(ls){var d=new Date();ls.textContent='마지막 저장 '+d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}}
-var sheetObs=new MutationObserver(function(muts){var child=muts.some(function(m){return m.type==='childList'});if(child)sync()});sheetObs.observe(sheet,{childList:true,subtree:true});
-var controlTimer=0;var controlObs=new MutationObserver(function(){clearTimeout(controlTimer);controlTimer=setTimeout(function(){persistNow();sync();restoreTool()},20)});controlObs.observe(controls,{childList:true,subtree:true});
-controls.addEventListener('input',function(e){if(e.target&&e.target.matches('select[data-path="font"]'))persistNow();sync()},true);controls.addEventListener('change',function(){persistNow();sync()},true);
-if(tabs)tabs.addEventListener('click',function(){setTimeout(function(){sync();restoreTool()},40);setTimeout(function(){sync();restoreTool()},180)},true);
+var syncing=false;function sync(){if(syncing)return;syncing=true;requestAnimationFrame(function(){applyFont(sheet);applyLayout(sheet);var sel=controls.querySelector('select[data-path="font"]');if(sel){var lf=lockedFont();for(var i=0;i<sel.options.length;i++){if(normalizeFont(sel.options[i].value)===lf){sel.selectedIndex=i;break}}}syncing=false})}
+function ensureUi(){var chip=document.querySelector('.welog-autosave-chip');if(!chip){chip=document.createElement('span');chip.className='welog-autosave-chip';chip.innerHTML='<i></i><span>자동 저장됨</span>';var brand=document.querySelector('.brand');if(brand)brand.insertAdjacentElement('afterend',chip)}var bar=document.querySelector('.welog-statusbar');if(!bar){bar=document.createElement('div');bar.className='welog-statusbar';bar.innerHTML='<div class="left"><span><i class="save-dot"></i>자동 저장 중</span><span class="welog-last-save">설정 유지됨</span></div><div class="right"><button type="button" data-welog-reset-layout>레이아웃 초기화</button><button type="button" class="danger" data-welog-reset-all>모든 설정 초기화</button></div>';document.body.appendChild(bar);bar.querySelector('[data-welog-reset-layout]').onclick=function(){localStorage.removeItem(LAYOUT_KEY);sync();window.dispatchEvent(new Event('resize'))};bar.querySelector('[data-welog-reset-all]').onclick=function(){if(confirm('WeLog의 텍스트·레이아웃 설정을 모두 초기화할까요?')){localStorage.removeItem(STATE_KEY);localStorage.removeItem(LAYOUT_KEY);localStorage.removeItem(FONT_KEY);location.reload()}}}}
+function restoreTool(){if(controls.querySelector('.welog-direct-layout-control'))return;var anchor=controls.querySelector('.layout-ratio-controls');if(!anchor)return;var box=document.createElement('section');box.className='welog-direct-layout-control';box.innerHTML='<div class="welog-direct-head"><div><b>편집 툴</b><span>시트에서 파트를 직접 선택해 조정합니다.</span></div><button type="button" data-layout-open>편집 툴 열기</button></div><p>페어명 · A+B 세트 · 중앙 그림 · OK 표시 · 커미션 출처를 직접 이동하고 크기를 조절할 수 있습니다.</p>';anchor.insertAdjacentElement('afterend',box)}
+var sheetObs=new MutationObserver(sync);sheetObs.observe(sheet,{childList:true,subtree:true});
+var controlTimer=0;new MutationObserver(function(){clearTimeout(controlTimer);controlTimer=setTimeout(function(){sync();restoreTool()},30)}).observe(controls,{childList:true,subtree:true});
+controls.addEventListener('change',function(e){if(e.target&&e.target.matches('select[data-path="font"]')){setLockedFont(e.target.value);sync()}},true);
+controls.addEventListener('input',function(e){if(e.target&&e.target.matches('select[data-path="font"]')){setLockedFont(e.target.value);sync()}},true);
+if(tabs)tabs.addEventListener('click',function(){setTimeout(function(){sync();restoreTool()},30);setTimeout(function(){sync();restoreTool()},160)},true);
 window.addEventListener('pageshow',function(){ensureUi();sync();restoreTool()});document.addEventListener('visibilitychange',function(){if(!document.hidden){sync();restoreTool()}});window.addEventListener('resize',sync);
-ensureUi();sync();setTimeout(sync,80);setTimeout(function(){sync();restoreTool()},300);setTimeout(function(){sync();restoreTool()},900);
+ensureUi();sync();setTimeout(function(){sync();restoreTool()},80);setTimeout(function(){sync();restoreTool()},300);
 })();
