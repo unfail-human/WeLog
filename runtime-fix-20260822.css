@@ -1,0 +1,6 @@
+/* Larger secondary labels */
+.pair-title-display{padding-bottom:14px!important}
+.pair-title-display small{font-size:14px!important;line-height:1.45!important;margin-top:8px!important;font-weight:500!important;color:#817b74!important;letter-spacing:.02em!important}
+.pair-title-display::after{content:"";display:block;width:min(210px,42%);height:1px;margin:14px auto 0;background:linear-gradient(90deg,transparent,#cfc7bd 18%,#bdb4a8 50%,#cfc7bd 82%,transparent)}
+#sheet .profile-subtitle{font-size:13px!important;line-height:1.45!important;margin-top:2px!important;font-weight:500!important;color:#817b74!important;letter-spacing:.01em!important}
+.character-meta-editor .meta-color-row{display:none!important}
