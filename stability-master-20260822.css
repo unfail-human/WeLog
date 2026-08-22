@@ -1,0 +1,9 @@
+/* Final master layer: UI font stays fixed; selected font applies only to the sheet and its export clones. */
+@font-face{font-family:"WeLogMasterPretendard";src:url("https://raw.githubusercontent.com/unfail-human/BackUp-X/main/webfonts/PretendardVariable.woff2") format("woff2");font-weight:100 900;font-style:normal;font-display:swap}
+@font-face{font-family:"WeLogMasterNoto";src:url("https://raw.githubusercontent.com/unfail-human/BackUp-X/main/webfonts/NotoSansKR-VariableFont_wght.woff2") format("woff2");font-weight:100 900;font-style:normal;font-display:swap}
+@font-face{font-family:"WeLogMasterDotum";src:url("https://raw.githubusercontent.com/unfail-human/BackUp-X/main/webfonts/KoPubWorld%20Dotum%20Medium.ttf") format("truetype");font-weight:500;font-style:normal;font-display:swap}
+@font-face{font-family:"WeLogMasterBatang";src:url("https://raw.githubusercontent.com/unfail-human/BackUp-X/main/webfonts/KoPubWorld%20Batang%20Medium.ttf") format("truetype");font-weight:500;font-style:normal;font-display:swap}
+:root{--welog-ui-font:Pretendard,"Noto Sans KR",Arial,sans-serif;--welog-master-sheet-font:"WeLogMasterPretendard",sans-serif}
+body,.topbar,.inspector,.inspector *,.slot-panel,.slot-panel *,.image-editor,.image-editor *,.welog-layout-hud,.welog-layout-hud *{font-family:var(--welog-ui-font)!important}
+#sheet,#sheet *,.welog-preview-sheet,.welog-preview-sheet *,.welog-exact-preview-sheet,.welog-exact-preview-sheet *,.welog-master-export,.welog-master-export *{font-family:var(--welog-master-sheet-font)!important}
+.welog-master-export-host{position:fixed!important;left:-30000px!important;top:0!important;z-index:-9999!important;pointer-events:none!important;background:transparent!important}
