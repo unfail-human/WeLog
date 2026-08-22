@@ -1,19 +1,23 @@
-/* Keep the split central-image mode as a real two-column canvas instead of two narrow bars. */
+/* Split central-image mode: balanced two-column canvas with user-adjustable overall area. */
+:root{--welog-split-size:100%;--welog-split-min-h:420px}
 #sheet .center .pair-split,
 .welog-preview-sheet .center .pair-split,
 .welog-exact-preview-sheet .center .pair-split,
 .welog-master-export .center .pair-split{
   display:grid!important;
   grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
-  column-gap:10px!important;
-  width:100%!important;
-  max-width:100%!important;
+  column-gap:2px!important;
+  gap:2px!important;
+  width:var(--welog-split-size)!important;
+  max-width:var(--welog-split-size)!important;
   min-width:0!important;
   height:auto!important;
-  min-height:420px!important;
+  min-height:var(--welog-split-min-h)!important;
   aspect-ratio:4/5!important;
-  align-self:stretch!important;
-  justify-self:stretch!important;
+  align-self:center!important;
+  justify-self:center!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
   overflow:visible!important;
 }
 #sheet .center .pair-split>.pair-image,
@@ -29,7 +33,6 @@
   aspect-ratio:auto!important;
   box-sizing:border-box!important;
   border-radius:8px!important;
-  background:#faf8f4!important;
   overflow:hidden!important;
 }
 #sheet .center .pair-split>.pair-image img,
@@ -40,10 +43,11 @@
   height:100%!important;
   object-fit:contain!important;
 }
-/* The center part itself must preserve a usable width in both combined and split modes. */
 #sheet .center,
 .welog-preview-sheet .center,
 .welog-exact-preview-sheet .center,
-.welog-master-export .center{
-  min-width:300px!important;
-}
+.welog-master-export .center{min-width:300px!important}
+
+/* MAIN-panel control for the split-area size. */
+.welog-split-area-control{margin:10px 0 14px;padding:12px;border:1px solid #ddd5ca;border-radius:10px;background:#fffdfa}
+.welog-split-area-control[hidden]{display:none!important}.welog-split-area-control .welog-split-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:9px}.welog-split-area-control .welog-split-head b{font-size:11px;color:#514b44}.welog-split-area-control .welog-split-head span{font-size:9px;color:#8d857b}.welog-split-area-control .welog-split-row{display:grid;grid-template-columns:minmax(0,1fr) 44px;gap:9px;align-items:center}.welog-split-area-control input[type=range]{width:100%;accent-color:#6b5947}.welog-split-area-control output{font-size:10px;text-align:right;color:#6d645a}.welog-split-area-control small{display:block;margin-top:7px;font-size:8px;line-height:1.45;color:#a0978c}
