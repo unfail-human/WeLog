@@ -3,3 +3,5 @@ body,.topbar,.inspector,.controls,.inspector-tabs,.slot-panel,.image-editor,.wel
 .inspector button,.inspector input,.inspector textarea,.inspector select,.controls button,.controls input,.controls textarea,.controls select{font-family:inherit!important}
 /* The selected font belongs to the rendered sheet only. */
 #sheet,#sheet *,.welog-preview-sheet,.welog-preview-sheet *,.welog-exact-preview-sheet,.welog-exact-preview-sheet *{font-family:var(--welog-sheet-font,var(--app-font))!important}
+/* Pair-name block is frequently recreated by renderSheet, so bind it directly to the sheet font variable. */
+#sheet .pair-title-display,#sheet .pair-title-display b,#sheet .pair-title-display small,.welog-preview-sheet .pair-title-display,.welog-preview-sheet .pair-title-display b,.welog-preview-sheet .pair-title-display small,.welog-exact-preview-sheet .pair-title-display,.welog-exact-preview-sheet .pair-title-display b,.welog-exact-preview-sheet .pair-title-display small{font-family:var(--welog-sheet-font)!important}
