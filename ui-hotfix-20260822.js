@@ -55,6 +55,8 @@
     applyConceptSheet();
   }
 
+  function afterRender(){setTimeout(function(){applyConceptControls();applyConceptSheet()},0)}
+
   if(controls){
     controls.addEventListener("input",function(e){
       var cb=e.target.closest&&e.target.closest("input[data-concept-side]");
@@ -66,12 +68,11 @@
       var cb=e.target.closest&&e.target.closest("input[data-concept-side]");
       if(cb)e.stopImmediatePropagation();
     },true);
+    controls.addEventListener("input",function(e){if(!(e.target.closest&&e.target.closest("input[data-concept-side]")))afterRender()},false);
+    controls.addEventListener("change",function(e){if(!(e.target.closest&&e.target.closest("input[data-concept-side]")))afterRender()},false);
+    new MutationObserver(afterRender).observe(controls,{childList:true,subtree:true});
   }
-
-  function afterRender(){setTimeout(function(){applyConceptControls();applyConceptSheet()},0)}
   document.addEventListener("click",afterRender,true);
-  if(controls)new MutationObserver(afterRender).observe(controls,{childList:true,subtree:true});
-  if(sheet)new MutationObserver(function(){setTimeout(applyConceptSheet,0)}).observe(sheet,{childList:true,subtree:true});
 
   async function waitForImages(root){
     var imgs=Array.from(root.querySelectorAll("img"));
