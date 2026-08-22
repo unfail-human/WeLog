@@ -1,0 +1,7 @@
+#sheet .center .pair-split>.pair-image.welog-bound-bg-cell{position:relative!important;background:transparent!important;overflow:visible!important}
+#sheet .center .pair-split>.pair-image.welog-bound-bg-cell::before{content:"";position:absolute;z-index:0;top:var(--welog-bound-top,0%);bottom:var(--welog-bound-bottom,0%);background:var(--welog-cell-bg,#fbfaf8);border-radius:8px;pointer-events:none}
+#sheet .center .pair-split>.pair-image.welog-bound-bg-cell:first-child::before{left:var(--welog-bound-left-cell,0%);right:0}
+#sheet .center .pair-split>.pair-image.welog-bound-bg-cell:last-child::before{left:0;right:var(--welog-bound-right-cell,0%)}
+#sheet .center .pair-split>.pair-image.welog-bound-bg-cell>img{position:relative!important;z-index:1!important;overflow:visible!important}
+/* The selection box follows the trimmed influence region, while artwork remains fully visible. */
+.welog-capturing .direct-bounds-overlay-fixed,.welog-capturing .welog-layout-overlay-fixed,.welog-capturing .welog-layout-hud,.welog-capturing .st-toolbar,.welog-capturing .st-resize,.welog-capturing .st-rotate{display:none!important}
