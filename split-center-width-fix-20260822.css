@@ -1,0 +1,49 @@
+/* Keep the split central-image mode as a real two-column canvas instead of two narrow bars. */
+#sheet .center .pair-split,
+.welog-preview-sheet .center .pair-split,
+.welog-exact-preview-sheet .center .pair-split,
+.welog-master-export .center .pair-split{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+  column-gap:10px!important;
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  height:auto!important;
+  min-height:420px!important;
+  aspect-ratio:4/5!important;
+  align-self:stretch!important;
+  justify-self:stretch!important;
+  overflow:visible!important;
+}
+#sheet .center .pair-split>.pair-image,
+.welog-preview-sheet .center .pair-split>.pair-image,
+.welog-exact-preview-sheet .center .pair-split>.pair-image,
+.welog-master-export .center .pair-split>.pair-image{
+  display:block!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+  height:100%!important;
+  min-height:0!important;
+  aspect-ratio:auto!important;
+  box-sizing:border-box!important;
+  border-radius:8px!important;
+  background:#faf8f4!important;
+  overflow:hidden!important;
+}
+#sheet .center .pair-split>.pair-image img,
+.welog-preview-sheet .center .pair-split>.pair-image img,
+.welog-exact-preview-sheet .center .pair-split>.pair-image img,
+.welog-master-export .center .pair-split>.pair-image img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:contain!important;
+}
+/* The center part itself must preserve a usable width in both combined and split modes. */
+#sheet .center,
+.welog-preview-sheet .center,
+.welog-exact-preview-sheet .center,
+.welog-master-export .center{
+  min-width:300px!important;
+}
