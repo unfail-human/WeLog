@@ -5,9 +5,77 @@
 .pair-title-display{padding:26px 28px 4px;text-align:center}
 .pair-title-display b{display:block;font-size:30px;font-weight:800;line-height:1.15;letter-spacing:-.02em;color:#2d2b28}
 .pair-title-display small{display:block;margin-top:5px;font-size:10px;font-weight:500;line-height:1.4;color:#918d86;letter-spacing:.04em}
-.profile-name-stack{display:flex;min-width:0;flex-direction:column;align-items:center;justify-content:center;gap:3px;text-align:center}
-.profile-name-stack>b{max-width:100%}
-.profile-subtitle{display:block;max-width:100%;font-size:10px!important;font-weight:500!important;line-height:1.35;color:#918d86;white-space:pre-wrap;overflow-wrap:anywhere}
+
+/* Name and secondary notation must stay in the same vertical stack. */
+#sheet .profile-title,
+#sheet .profile.left .profile-title,
+#sheet .profile.right .profile-title{
+  display:flex!important;
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:3px!important;
+  text-align:center!important;
+  writing-mode:horizontal-tb!important;
+  text-orientation:mixed!important;
+}
+.profile-name-stack{
+  display:flex!important;
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:3px!important;
+  position:static!important;
+  text-align:center!important;
+  writing-mode:horizontal-tb!important;
+}
+.profile-name-stack>b{
+  display:block!important;
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  position:static!important;
+  margin:0!important;
+  text-align:center!important;
+  writing-mode:horizontal-tb!important;
+  overflow-wrap:anywhere!important;
+}
+.profile-subtitle{
+  display:block!important;
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  position:static!important;
+  inset:auto!important;
+  float:none!important;
+  margin:0!important;
+  transform:none!important;
+  font-size:10px!important;
+  font-weight:500!important;
+  line-height:1.35!important;
+  color:#918d86;
+  text-align:center!important;
+  writing-mode:horizontal-tb!important;
+  text-orientation:mixed!important;
+  white-space:normal!important;
+  word-break:keep-all!important;
+  overflow-wrap:anywhere!important;
+}
+
+/* Entered text is never allowed to escape to the side of its own column. */
+#sheet .profile,#sheet .quote,#sheet .quote-text,#sheet .facts,#sheet .facts b,#sheet .formatted-lines,#sheet .text-block,#sheet .text-block p,#sheet .commission-block{
+  min-width:0!important;
+  max-width:100%!important;
+  writing-mode:horizontal-tb!important;
+  text-orientation:mixed!important;
+}
+
 .pair-meta-editor,.character-meta-editor,.font-extra-controls{margin:0 0 16px;padding:13px;border:1px solid #ddd5ca;border-radius:11px;background:#fff;box-shadow:0 5px 16px rgba(55,48,40,.05)}
 .pair-meta-editor{margin-top:0;margin-bottom:18px}
 .pair-meta-editor-head,.font-extra-head{display:flex;align-items:flex-end;justify-content:space-between;gap:8px;margin-bottom:11px;padding-bottom:9px;border-bottom:1px solid #ebe5dc}
