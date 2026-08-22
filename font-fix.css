@@ -1,0 +1,10 @@
+/* Force the selected WeLog font throughout the rendered pair sheet. */
+#sheet,
+#sheet * {
+  font-family: var(--app-font, Pretendard, "Noto Sans KR", sans-serif) !important;
+}
+
+/* Keep symbol glyphs readable while still allowing the selected font to win first. */
+#sheet .profile-symbol {
+  font-family: var(--app-font, Pretendard, "Noto Sans KR", sans-serif), "Segoe UI Symbol", "Noto Sans Symbols 2" !important;
+}
