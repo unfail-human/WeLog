@@ -1,0 +1,14 @@
+/* Final interaction/layout patch: keep the canvas visually stable while editing. */
+.stage,#sheet,.inspector,.controls{overflow-anchor:none!important;scroll-behavior:auto!important}
+#sheet,#sheet *{transition:none!important;animation:none!important}
+
+/* Split center images use the exact same portrait ratio as the image-editor guide. */
+#sheet .center-canvas{width:100%!important;min-width:0!important;display:flex!important;align-items:center!important;justify-content:center!important;overflow:visible!important}
+#sheet .pair-split{width:100%!important;min-width:0!important;height:auto!important;min-height:0!important;display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:12px!important;align-items:center!important;justify-items:stretch!important;background:transparent!important;overflow:visible!important}
+#sheet .pair-split>.pair-image{display:block!important;width:100%!important;min-width:0!important;height:auto!important;min-height:0!important;aspect-ratio:346/700!important;margin:0!important;padding:0!important;border:0!important;border-radius:8px!important;overflow:hidden!important;box-sizing:border-box!important}
+#sheet .pair-split>.pair-image img{display:block!important;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;object-fit:contain!important;object-position:center!important;transform-origin:center center!important;will-change:transform!important}
+
+/* Preview/export must use the same split geometry. */
+.welog-exact-preview-sheet .pair-split,.welog-preview-sheet .pair-split,.welog-master-export .pair-split{width:100%!important;height:auto!important;min-height:0!important;display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:12px!important;align-items:center!important;background:transparent!important}
+.welog-exact-preview-sheet .pair-split>.pair-image,.welog-preview-sheet .pair-split>.pair-image,.welog-master-export .pair-split>.pair-image{width:100%!important;height:auto!important;min-height:0!important;aspect-ratio:346/700!important;overflow:hidden!important;border-radius:8px!important}
+.welog-exact-preview-sheet .pair-split>.pair-image img,.welog-preview-sheet .pair-split>.pair-image img,.welog-master-export .pair-split>.pair-image img{width:100%!important;height:100%!important;object-fit:contain!important;transform-origin:center center!important}
