@@ -43,9 +43,16 @@
   }
   function paint(root,family){
     if(!root)return;
+    /* Keep the selected family as a sheet-scoped CSS variable so newly rendered nodes
+       (especially the pair-name block) inherit it even after renderSheet replaces them. */
+    root.style.setProperty('--welog-sheet-font',family);
     root.style.setProperty('font-family',family,'important');
     root.querySelectorAll('*').forEach(function(el){
       if(el.classList&&el.classList.contains('welog-layout-overlay-fixed'))return;
+      el.style.setProperty('font-family',family,'important');
+    });
+    /* Pair title used to be recreated after font application. Force the current nodes too. */
+    root.querySelectorAll('.pair-title-display,.pair-title-display b,.pair-title-display small').forEach(function(el){
       el.style.setProperty('font-family',family,'important');
     });
   }
@@ -71,6 +78,10 @@
   controls.addEventListener('input',handle,true);
   controls.addEventListener('change',handle,true);
   document.addEventListener('click',function(){setTimeout(resetUi,0)},true);
+  /* Main controls can replace parts of #sheet. Reapply only after genuine form edits,
+     without observing the DOM (which previously caused editor loops). */
+  document.addEventListener('input',function(e){if(sheet.contains(e.target))return;setTimeout(function(){apply()},0)},false);
+  document.addEventListener('change',function(e){if(sheet.contains(e.target))return;setTimeout(function(){apply()},0)},false);
   window.addEventListener('resize',function(){resetUi();apply()},false);
   Object.keys(defs).forEach(load);
   resetUi();
