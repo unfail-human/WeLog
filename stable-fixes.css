@@ -1,88 +1,31 @@
-/* 2026-08-22 stable WeLog fixes */
-#sheet{font-family:var(--welog-font,Pretendard,"Noto Sans KR",sans-serif)!important}
-#sheet *{font-family:inherit!important}
-#sheet .profile-symbol{font-family:var(--welog-font,Pretendard,"Noto Sans KR",sans-serif),"Segoe UI Symbol","Noto Sans Symbols 2"!important}
-.pair-title-display{padding:26px 28px 4px;text-align:center}
-.pair-title-display b{display:block;font-size:30px;font-weight:800;line-height:1.15;letter-spacing:-.02em;color:#2d2b28}
-.pair-title-display small{display:block;margin-top:5px;font-size:10px;font-weight:500;line-height:1.4;color:#918d86;letter-spacing:.04em}
+/* 2026-08-22 — pair metadata + reliable global fonts */
+#sheet,#sheet *{font-family:var(--app-font,Pretendard,"Noto Sans KR",sans-serif)!important}
+#sheet .profile-symbol{font-family:var(--app-font,Pretendard,"Noto Sans KR",sans-serif),"Segoe UI Symbol","Noto Sans Symbols 2"!important}
 
-/* Name and secondary notation must stay in the same vertical stack. */
-#sheet .profile-title,
-#sheet .profile.left .profile-title,
-#sheet .profile.right .profile-title{
-  display:flex!important;
-  width:100%!important;
-  max-width:100%!important;
-  min-width:0!important;
-  flex-direction:column!important;
-  align-items:center!important;
-  justify-content:center!important;
-  gap:3px!important;
-  text-align:center!important;
-  writing-mode:horizontal-tb!important;
-  text-orientation:mixed!important;
-}
-.profile-name-stack{
-  display:flex!important;
-  width:100%!important;
-  max-width:100%!important;
-  min-width:0!important;
-  flex-direction:column!important;
-  align-items:center!important;
-  justify-content:center!important;
-  gap:3px!important;
-  position:static!important;
-  text-align:center!important;
-  writing-mode:horizontal-tb!important;
-}
-.profile-name-stack>b{
-  display:block!important;
-  width:100%!important;
-  max-width:100%!important;
-  min-width:0!important;
-  position:static!important;
-  margin:0!important;
-  text-align:center!important;
-  writing-mode:horizontal-tb!important;
-  overflow-wrap:anywhere!important;
-}
-.profile-subtitle{
-  display:block!important;
-  width:100%!important;
-  max-width:100%!important;
-  min-width:0!important;
-  position:static!important;
-  inset:auto!important;
-  float:none!important;
-  margin:0!important;
-  transform:none!important;
-  font-size:10px!important;
-  font-weight:500!important;
-  line-height:1.35!important;
-  color:#918d86;
-  text-align:center!important;
-  writing-mode:horizontal-tb!important;
-  text-orientation:mixed!important;
-  white-space:normal!important;
-  word-break:keep-all!important;
-  overflow-wrap:anywhere!important;
-}
+/* Pair title at the top of the sheet */
+.pair-title-display{padding:24px 32px 8px;text-align:center}
+.pair-title-display[hidden]{display:none!important}
+.pair-title-display b{display:block;font-size:31px;font-weight:800;line-height:1.15;letter-spacing:-.025em;color:#2d2b28;overflow-wrap:anywhere}
+.pair-title-display small{display:block;margin-top:6px;font-size:10px;font-weight:500;line-height:1.4;color:#918d86;letter-spacing:.035em;overflow-wrap:anywhere}
 
-/* Entered text is never allowed to escape to the side of its own column. */
-#sheet .profile,#sheet .quote,#sheet .quote-text,#sheet .facts,#sheet .facts b,#sheet .formatted-lines,#sheet .text-block,#sheet .text-block p,#sheet .commission-block{
-  min-width:0!important;
-  max-width:100%!important;
-  writing-mode:horizontal-tb!important;
-  text-orientation:mixed!important;
-}
+/* Character name + fixed-size secondary notation below it */
+#sheet .profile-title{min-width:0!important}
+#sheet .profile-name-stack{display:flex;min-width:0;max-width:100%;flex-direction:column;align-items:center;justify-content:center;gap:3px;text-align:center}
+#sheet .profile-name-stack>b{display:block;max-width:100%;margin:0;text-align:center;overflow-wrap:anywhere}
+#sheet .profile-subtitle{display:block;max-width:100%;margin:0;font-size:10px!important;font-weight:500!important;line-height:1.35!important;text-align:center;white-space:normal;word-break:keep-all;overflow-wrap:anywhere}
 
-.pair-meta-editor,.character-meta-editor,.font-extra-controls{margin:0 0 16px;padding:13px;border:1px solid #ddd5ca;border-radius:11px;background:#fff;box-shadow:0 5px 16px rgba(55,48,40,.05)}
-.pair-meta-editor{margin-top:0;margin-bottom:18px}
-.pair-meta-editor-head,.font-extra-head{display:flex;align-items:flex-end;justify-content:space-between;gap:8px;margin-bottom:11px;padding-bottom:9px;border-bottom:1px solid #ebe5dc}
-.pair-meta-editor-head b,.font-extra-head b{font-size:13px;color:#4f4942}.pair-meta-editor-head span,.font-extra-head span{font-size:8px;color:#948c82;text-align:right}
-.pair-meta-editor label,.character-meta-editor label{display:block;margin-top:9px}.pair-meta-editor label>span,.character-meta-editor label>span{display:block;margin-bottom:5px;font-size:10px;font-weight:700;color:#5e574f}
-.pair-meta-editor input[type=text],.character-meta-editor input[type=text]{width:100%;height:38px;padding:8px 9px;border:1px solid #e0d8cd;border-radius:7px;background:#f8f6f2;color:#625e58;font-size:11px}
+/* MAIN pair-name editor and character secondary notation editor */
+.pair-meta-editor,.character-meta-editor{margin:0 0 16px;padding:13px;border:1px solid #ddd5ca;border-radius:11px;background:#fff;box-shadow:0 5px 16px rgba(55,48,40,.05)}
+.pair-meta-editor{margin-bottom:18px}
+.pair-meta-editor-head{display:flex;align-items:flex-end;justify-content:space-between;gap:8px;margin-bottom:11px;padding-bottom:9px;border-bottom:1px solid #ebe5dc}
+.pair-meta-editor-head b{font-size:13px;color:#4f4942}.pair-meta-editor-head span{font-size:8px;color:#948c82;text-align:right}
+.pair-meta-editor label,.character-meta-editor label{display:block;margin-top:9px}
+.pair-meta-editor label>span,.character-meta-editor label>span{display:block;margin-bottom:5px;font-size:10px;font-weight:700;color:#5e574f}
+.pair-meta-editor input[type=text],.character-meta-editor input[type=text]{width:100%;height:38px;padding:8px 9px;border:1px solid #e0d8cd;border-radius:7px;background:#f8f6f2;color:#625e58;font-size:11px;user-select:text;-webkit-user-select:text}
+.pair-meta-editor input[type=text]:focus,.character-meta-editor input[type=text]:focus{outline:0;background:#fff;border-color:#aca094;box-shadow:0 0 0 3px rgba(172,160,148,.12)}
 .character-meta-editor{margin-top:-5px}.character-meta-editor .meta-color-row{display:grid;grid-template-columns:1fr 64px;gap:9px;align-items:end;margin-top:9px}.character-meta-editor input[type=color]{appearance:none;width:64px;height:34px;padding:0;border:1px solid #ded7ce;border-radius:7px;overflow:hidden;background:#fff}
 .character-meta-editor input[type=color]::-webkit-color-swatch-wrapper{padding:0}.character-meta-editor input[type=color]::-webkit-color-swatch{border:0}.character-meta-editor input[type=color]::-moz-color-swatch{border:0}
-.font-extra-controls{margin-top:10px}.font-extra-controls select{width:100%;height:40px;padding:8px;border:1px solid #d8cfc2;border-radius:8px;background:#f9f7f3;color:#625e58;font-size:11px}.font-upload-label{position:relative;display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:9px;padding:10px 11px;border:1px dashed #cfc7bc;border-radius:8px;background:#fbfaf8;cursor:pointer}.font-upload-label b{font-size:10px;color:#5d574f}.font-upload-label small{font-size:8px;color:#948c82}.font-upload-label input{position:absolute;width:1px;height:1px;opacity:0}
-.concept-control-head label{user-select:none}
+
+/* Font upload lives directly under the existing global-font selector */
+.global-font-controls .font-upload-label{position:relative;display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;padding:10px 11px;border:1px dashed #cfc7bc;border-radius:8px;background:#fbfaf8;cursor:pointer}
+.global-font-controls .font-upload-label b{font-size:10px;color:#5d574f}.global-font-controls .font-upload-label small{font-size:8px;color:#948c82}.global-font-controls .font-upload-label input{position:absolute;width:1px;height:1px;opacity:0}
