@@ -1,109 +1,13 @@
 (function(){
-  var KEY="welog-pair-sheet-v4";
-  var controls=document.querySelector("#controls"),sheet=document.querySelector("#sheet"),printBtn=document.querySelector("#printBtn");
-
-  function read(){try{return JSON.parse(localStorage.getItem(KEY)||"{}")||{}}catch(e){return{}}}
-  function write(s){try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}}
-  function esc(v){return String(v==null?"":v).replace(/[&<>\"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'\"':"&quot;"}[c]})}
-  function conceptSides(s){
-    if(Array.isArray(s.conceptSides))return s.conceptSides.filter(function(x){return x==="left"||x==="right"});
-    if(s.visible&&s.visible.concept&&s.conceptSide)return [s.conceptSide];
-    return [];
-  }
-  function styleFor(s,path){
-    var st=(s.textStyles&&s.textStyles[path])||{};
-    return "font-weight:"+(st.bold?700:400)+";font-style:"+(st.italic?"italic":"normal")+";text-decoration:"+(st.underline?"underline":"none")+";color:"+(st.color||"#24211d")+";font-size:13px;text-align:"+(st.align||"left")+";white-space:pre-wrap";
-  }
-  function conceptBlock(s,side){
-    var value=s[side]&&s[side].concept||"";
-    var ps=String(value).split("\n").filter(Boolean).map(function(x){return "<p>"+esc(x)+"</p>"}).join("");
-    var wrap=document.createElement("div");
-    wrap.className="text-block concept-block";
-    wrap.dataset.hotfixConcept=side;
-    wrap.innerHTML='<h3>컨셉</h3><div class="formatted-lines" style="'+styleFor(s,side+".concept")+'">'+ps+'</div>';
-    return wrap;
-  }
-  function applyConceptSheet(){
-    if(!sheet)return;
-    var s=read(),selected=conceptSides(s);
-    sheet.querySelectorAll(".concept-block").forEach(function(el){el.remove()});
-    selected.forEach(function(side){
-      var profile=sheet.querySelector(".profile."+side);
-      if(!profile)return;
-      var block=conceptBlock(s,side),commission=profile.querySelector(".commission-block");
-      if(commission)profile.insertBefore(block,commission);else profile.appendChild(block);
-    });
-  }
-  function applyConceptControls(){
-    if(!controls)return;
-    var s=read(),selected=conceptSides(s);
-    controls.querySelectorAll("input[data-concept-side]").forEach(function(cb){
-      cb.checked=selected.indexOf(cb.dataset.conceptSide)>=0;
-    });
-    controls.querySelectorAll(".character-meta-editor .meta-color-row").forEach(function(el){el.remove()});
-  }
-  function syncConceptState(side,checked){
-    var s=read(),selected=conceptSides(s),i=selected.indexOf(side);
-    if(checked&&i<0)selected.push(side);
-    if(!checked&&i>=0)selected.splice(i,1);
-    s.conceptSides=selected;
-    s.conceptSide=selected[0]||"";
-    s.visible=s.visible||{};
-    s.visible.concept=selected.length>0;
-    write(s);
-    applyConceptControls();
-    applyConceptSheet();
-  }
-
-  function afterRender(){setTimeout(function(){applyConceptControls();applyConceptSheet()},0)}
-
-  if(controls){
-    controls.addEventListener("input",function(e){
-      var cb=e.target.closest&&e.target.closest("input[data-concept-side]");
-      if(!cb)return;
-      e.stopImmediatePropagation();
-      syncConceptState(cb.dataset.conceptSide,cb.checked);
-    },true);
-    controls.addEventListener("change",function(e){
-      var cb=e.target.closest&&e.target.closest("input[data-concept-side]");
-      if(cb)e.stopImmediatePropagation();
-    },true);
-    controls.addEventListener("input",function(e){if(!(e.target.closest&&e.target.closest("input[data-concept-side]")))afterRender()},false);
-    controls.addEventListener("change",function(e){if(!(e.target.closest&&e.target.closest("input[data-concept-side]")))afterRender()},false);
-    new MutationObserver(afterRender).observe(controls,{childList:true,subtree:true});
-  }
-  document.addEventListener("click",afterRender,true);
-
-  async function waitForImages(root){
-    var imgs=Array.from(root.querySelectorAll("img"));
-    await Promise.all(imgs.map(function(img){
-      if(img.complete)return Promise.resolve();
-      return new Promise(function(resolve){var done=function(){resolve()};img.addEventListener("load",done,{once:true});img.addEventListener("error",done,{once:true});setTimeout(done,5000)});
-    }));
-  }
-  async function savePng(){
-    if(!sheet||!window.html2canvas){alert("PNG 저장 기능을 불러오지 못했습니다. 새로고침 후 다시 시도해 주세요.");return}
-    var oldTransform=sheet.style.transform,oldOrigin=sheet.style.transformOrigin;
-    printBtn.disabled=true;printBtn.textContent="저장 중…";
-    try{
-      applyConceptSheet();
-      if(document.fonts&&document.fonts.ready)await document.fonts.ready;
-      await waitForImages(sheet);
-      sheet.style.transform="none";sheet.style.transformOrigin="top left";
-      await new Promise(function(r){requestAnimationFrame(function(){requestAnimationFrame(r)})});
-      var w=Math.max(sheet.scrollWidth,sheet.offsetWidth),h=Math.max(sheet.scrollHeight,sheet.offsetHeight);
-      var maxPixels=18000000,scale=Math.min(2,Math.max(1,Math.sqrt(maxPixels/Math.max(1,w*h))));
-      var canvas=await window.html2canvas(sheet,{scale:scale,useCORS:true,allowTaint:false,backgroundColor:"#ffffff",logging:false,imageTimeout:15000,foreignObjectRendering:false,removeContainer:true,width:w,height:h,scrollX:0,scrollY:0});
-      var blob=await new Promise(function(resolve){canvas.toBlob(resolve,"image/png",1)});
-      if(!blob)throw new Error("PNG blob creation failed");
-      var url=URL.createObjectURL(blob),a=document.createElement("a");
-      a.href=url;a.download=((read().pairName||"WeLog").trim()||"WeLog")+".png";a.style.display="none";document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url)},1500);
-    }catch(err){console.error("WeLog PNG export failed",err);alert("PNG 저장에 실패했습니다. 이미지를 다시 불러오거나 새로고침한 뒤 다시 시도해 주세요.")}
-    finally{sheet.style.transform=oldTransform;sheet.style.transformOrigin=oldOrigin;printBtn.disabled=false;printBtn.textContent="↓ PNG 저장"}
-  }
-  if(printBtn)printBtn.onclick=savePng;
-
-  var s=read();
-  if(!Array.isArray(s.conceptSides)){s.conceptSides=conceptSides(s);write(s)}
-  afterRender();
+var KEY="welog-pair-sheet-v4",controls=document.querySelector("#controls"),sheet=document.querySelector("#sheet"),btn=document.querySelector("#printBtn");
+function read(){try{return JSON.parse(localStorage.getItem(KEY)||"{}")||{}}catch(e){return{}}}function write(s){try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}}
+var fm={Pretendard:'Pretendard,sans-serif',"Noto Sans KR":'"Noto Sans KR",sans-serif',"KoPub Dotum Light":'"KoPub Dotum Light",sans-serif',"KoPub Dotum Medium":'"KoPub Dotum Medium",sans-serif',"KoPub Dotum Bold":'"KoPub Dotum Bold",sans-serif',"KoPub Batang Light":'"KoPub Batang Light",serif',"KoPub Batang Medium":'"KoPub Batang Medium",serif',"KoPub Batang Bold":'"KoPub Batang Bold",serif',__system__:'system-ui,-apple-system,"Segoe UI",sans-serif'};
+function stack(n){return fm[n]||('"'+String(n||"Pretendard").replace(/"/g,"")+'",sans-serif')}function font(n){n=n||read().font||"Pretendard";var f=stack(n);document.documentElement.style.setProperty("--app-font",f);if(sheet){sheet.style.setProperty("font-family",f,"important");sheet.querySelectorAll("*").forEach(function(x){x.style.setProperty("font-family",f,"important")})}}
+function sides(s){if(Array.isArray(s.conceptSides))return s.conceptSides.filter(function(x){return x==="left"||x==="right"});return s.visible&&s.visible.concept&&s.conceptSide?[s.conceptSide]:[]}
+function concepts(){if(!sheet)return;var s=read(),ss=sides(s);sheet.querySelectorAll(".concept-block").forEach(function(x){x.remove()});ss.forEach(function(side){var p=sheet.querySelector(".profile."+side);if(!p)return;var d=document.createElement("div"),v=s[side]&&s[side].concept||"";d.className="text-block concept-block";d.innerHTML="<h3>컨셉</h3><div class=formatted-lines>"+String(v).split("\n").filter(Boolean).map(function(t){var q=document.createElement("div");q.textContent=t;return"<p>"+q.innerHTML+"</p>"}).join("")+"</div>";var c=p.querySelector(".commission-block");c?p.insertBefore(d,c):p.appendChild(d)})}
+function ctl(){if(!controls)return;var s=read(),ss=sides(s);controls.querySelectorAll("input[data-concept-side]").forEach(function(c){c.checked=ss.indexOf(c.dataset.conceptSide)>=0});controls.querySelectorAll(".character-meta-editor .meta-color-row").forEach(function(x){x.remove()});var sel=controls.querySelector('select[data-path="font"]');if(sel&&!sel.querySelector('option[value="__system__"]')){var o=document.createElement("option");o.value="__system__";o.textContent="시스템 폰트";sel.appendChild(o)}}
+if(controls){controls.addEventListener("input",function(e){if(e.target.matches('select[data-path="font"]')){var s=read();s.font=e.target.value;write(s);font(e.target.value)}var c=e.target.closest&&e.target.closest("input[data-concept-side]");if(c){e.stopImmediatePropagation();var s=read(),ss=sides(s),i=ss.indexOf(c.dataset.conceptSide);if(c.checked&&i<0)ss.push(c.dataset.conceptSide);if(!c.checked&&i>=0)ss.splice(i,1);s.conceptSides=ss;s.conceptSide=ss[0]||"";s.visible=s.visible||{};s.visible.concept=!!ss.length;write(s);ctl();concepts()}},true)}
+function refresh(){setTimeout(function(){ctl();concepts();font()},0)}document.addEventListener("click",refresh,true);if(controls)new MutationObserver(refresh).observe(controls,{childList:true,subtree:true});if(sheet)new MutationObserver(function(){setTimeout(function(){concepts();font()},0)}).observe(sheet,{childList:true,subtree:true});
+async function save(){if(!sheet||!window.html2canvas){alert("PNG 저장 기능을 불러오지 못했습니다.");return}var old=sheet.style.cssText;btn.disabled=true;btn.textContent="저장 중…";try{concepts();font();if(document.fonts)await document.fonts.ready;await Promise.all(Array.from(sheet.querySelectorAll("img")).map(function(i){return i.complete?Promise.resolve():new Promise(function(r){i.onload=i.onerror=r;setTimeout(r,4000)})}));sheet.style.transform="none";await new Promise(function(r){requestAnimationFrame(function(){requestAnimationFrame(r)})});var w=sheet.scrollWidth,h=sheet.scrollHeight,scale=w*h>12000000?1:1.5,c=await html2canvas(sheet,{scale:scale,useCORS:true,allowTaint:true,backgroundColor:"#fff",logging:false,imageTimeout:0,width:w,height:h,scrollX:0,scrollY:0});var data=c.toDataURL("image/png");if(!data||data.length<1000)throw Error("empty");var a=document.createElement("a");a.href=data;a.download=((read().pairName||"WeLog").trim()||"WeLog")+".png";document.body.appendChild(a);a.click();a.remove()}catch(e){console.error("PNG",e);alert("PNG 저장에 실패했습니다. 현재 화면을 브라우저 인쇄(Ctrl+P)에서 PDF로 저장할 수 있습니다.")}finally{sheet.style.cssText=old;font();btn.disabled=false;btn.textContent="↓ PNG 저장"}}
+if(btn)btn.addEventListener("click",function(e){e.preventDefault();e.stopImmediatePropagation();save()},true);refresh();
 })();
