@@ -5,10 +5,12 @@
   var controls=document.querySelector("#controls");
   var sheet=document.querySelector("#sheet");
   var uploadedFonts=[];
+  var enhancing=false;
+  var enhanceQueued=false;
 
   function readState(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||"{}")||{}}catch(e){return{}}}
   function writeState(state){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}catch(e){}}
-  function updateState(path,value){var s=readState(),parts=path.split("."),o=s;parts.slice(0,-1).forEach(function(k){if(!o[k]||typeof o[k]!=="object")o[k]={};o=o[k]});o[parts[parts.length-1]]=value;writeState(s);enhanceAll()}
+  function updateState(path,value){var s=readState(),parts=path.split("."),o=s;parts.slice(0,-1).forEach(function(k){if(!o[k]||typeof o[k]!=="object")o[k]={};o=o[k]});o[parts[parts.length-1]]=value;writeState(s);queueEnhance()}
   function esc(v){return String(v||"").replace(/[&<>\"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'\"':"&quot;"}[c]})}
   function currentSide(){var active=controls&&controls.querySelector("[data-character-side].on");return active&&active.dataset.characterSide||"left"}
 
@@ -43,7 +45,7 @@
     var global=controls.querySelector(".global-font-controls");if(!global)return;var select=global.querySelector('select[data-path="font"]');
     if(select){
       if(!select.querySelector('option[value="__default__"]'))select.insertAdjacentHTML("afterbegin",'<option value="__default__">기본 폰트 (Pretendard)</option><option value="__system__">시스템 폰트</option>');
-      uploadedFonts.forEach(function(f){if(!select.querySelector('option[value="'+CSS.escape(f.name)+'"]')){var op=document.createElement("option");op.value=f.name;op.textContent="업로드 · "+f.name;select.appendChild(op)}});
+      uploadedFonts.forEach(function(f){if(!Array.from(select.options).some(function(o){return o.value===f.name})){var op=document.createElement("option");op.value=f.name;op.textContent="업로드 · "+f.name;select.appendChild(op)}});
       if(Array.from(select.options).some(function(o){return o.value===(s.font||"Pretendard")}))select.value=s.font||"Pretendard";
     }
     if(!global.querySelector(".font-upload-control")){var up=document.createElement("label");up.className="font-upload-control";up.innerHTML='<span>폰트 업로드</span><input type="file" accept=".ttf,.otf,.woff,.woff2,font/ttf,font/otf,font/woff,font/woff2"><small>TTF · OTF · WOFF · WOFF2</small>';global.appendChild(up)}
@@ -52,21 +54,36 @@
   function enhanceProfile(side){
     if(!sheet)return;var title=sheet.querySelector(".profile."+side+" .profile-title");if(!title)return;var s=readState(),data=s[side]||{},value=data.subtitle||"",color=data.subtitleColor||"#918980",stack=title.querySelector(".profile-name-stack");
     if(!stack){var name=title.querySelector(":scope > b");if(!name)return;stack=document.createElement("div");stack.className="profile-name-stack";name.replaceWith(stack);stack.appendChild(name)}
-    var small=stack.querySelector(".profile-subtitle");if(!small){small=document.createElement("small");small.className="profile-subtitle";stack.appendChild(small)}small.textContent=value;small.style.color=color;small.hidden=!value;
+    var small=stack.querySelector(".profile-subtitle");if(!small){small=document.createElement("small");small.className="profile-subtitle";stack.appendChild(small)}
+    if(small.textContent!==value)small.textContent=value;
+    if(small.style.color!==color)small.style.color=color;
+    small.hidden=!value;
   }
+
   function enhancePairTitle(){
     if(!sheet)return;var s=readState(),grid=sheet.querySelector(".sheet-grid");if(!grid)return;var head=sheet.querySelector(".pair-title-display");if(!head){head=document.createElement("header");head.className="pair-title-display";grid.insertAdjacentElement("beforebegin",head)}
-    var name=s.pairName||"",sub=s.catchphrase||"";head.innerHTML='<b>'+esc(name)+'</b>'+(sub?'<small>'+esc(sub)+'</small>':'');head.hidden=!name&&!sub;
+    var name=s.pairName||"",sub=s.catchphrase||"",html='<b>'+esc(name)+'</b>'+(sub?'<small>'+esc(sub)+'</small>':'');
+    if(head.innerHTML!==html)head.innerHTML=html;
+    head.hidden=!name&&!sub;
   }
-  function enhanceAll(){applyFont();enhanceProfile("left");enhanceProfile("right");enhancePairTitle()}
+
+  function enhanceAll(){
+    if(enhancing)return;
+    enhancing=true;
+    try{applyFont();enhanceProfile("left");enhanceProfile("right");enhancePairTitle()}finally{enhancing=false}
+  }
+  function queueEnhance(){
+    if(enhanceQueued)return;
+    enhanceQueued=true;
+    requestAnimationFrame(function(){enhanceQueued=false;enhanceAll()});
+  }
 
   if(controls){
-    controls.addEventListener("input",function(e){var path=e.target.dataset&&e.target.dataset.extraPath;if(path){updateState(path,e.target.value);return}if(e.target.matches('.font-upload-control input[type="file"]')){var file=e.target.files&&e.target.files[0];if(!file)return;var base=(file.name||"Custom Font").replace(/\.[^.]+$/,""),name=base,reader=new FileReader();reader.onload=function(){dbPut({name:name,type:file.type||"font/woff2",data:reader.result}).then(function(){return refreshUploadedFonts()}).then(function(){updateState("font",name);var sel=controls.querySelector('select[data-path="font"]');if(sel)sel.value=name}).catch(function(){alert("폰트를 저장하지 못했습니다.")})};reader.readAsArrayBuffer(file);e.target.value=""}}
-    ,true);
+    controls.addEventListener("input",function(e){var path=e.target.dataset&&e.target.dataset.extraPath;if(path){updateState(path,e.target.value);return}if(e.target.matches('.font-upload-control input[type="file"]')){var file=e.target.files&&e.target.files[0];if(!file)return;var base=(file.name||"Custom Font").replace(/\.[^.]+$/,""),name=base,reader=new FileReader();reader.onload=function(){dbPut({name:name,type:file.type||"font/woff2",data:reader.result}).then(function(){return refreshUploadedFonts()}).then(function(){updateState("font",name);var sel=controls.querySelector('select[data-path="font"]');if(sel)sel.value=name}).catch(function(){alert("폰트를 저장하지 못했습니다.")})};reader.readAsArrayBuffer(file);e.target.value=""}},true);
     controls.addEventListener("change",function(e){if(e.target.matches('select[data-path="font"]'))setTimeout(applyFont,0)},true);
   }
 
-  var controlsObserver=controls&&new MutationObserver(function(){ensureCharacterControls();ensureMainControls()});if(controlsObserver)controlsObserver.observe(controls,{childList:true,subtree:true});
-  var sheetObserver=sheet&&new MutationObserver(function(){enhanceAll()});if(sheetObserver)sheetObserver.observe(sheet,{childList:true,subtree:true});
+  var controlsObserver=controls&&new MutationObserver(function(){if(enhancing)return;ensureCharacterControls();ensureMainControls()});if(controlsObserver)controlsObserver.observe(controls,{childList:true,subtree:true});
+  var sheetObserver=sheet&&new MutationObserver(function(){if(enhancing)return;queueEnhance()});if(sheetObserver)sheetObserver.observe(sheet,{childList:true,subtree:true});
   ensureCharacterControls();ensureMainControls();enhanceAll();refreshUploadedFonts();
 })();
