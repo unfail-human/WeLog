@@ -1,143 +1,30 @@
-/* 2026-08-22 — global font fix + character subtitle */
-
-/*
- * Several earlier rules use `font:` shorthands with Georgia, which override
- * the global --app-font variable. Keep decorative UI outside the sheet as-is,
- * but make the actual pair sheet consistently follow the selected font.
- */
+/* 2026-08-22 — reliable global font, custom font upload, pair title */
 .sheet,
-.sheet .profile-title b,
-.sheet .profile-name-stack,
-.sheet .profile-subtitle,
-.sheet .quote,
-.sheet .quote-text,
-.sheet .facts,
-.sheet .facts span,
-.sheet .facts b,
-.sheet .text-block,
-.sheet .text-block h3,
-.sheet .text-block p,
-.sheet .formatted-lines,
-.sheet .commission-block,
-.sheet .commission-block small,
-.sheet .commission-block b,
-.sheet .commission-block span {
+.sheet *:not(.profile-symbol) {
   font-family: var(--app-font) !important;
 }
+.sheet .profile-symbol { font-family:"Noto Sans Symbols 2","Segoe UI Symbol",Georgia,serif !important; }
 
-/* Name + optional small line beneath it */
-.profile-title .profile-name-stack {
-  display: flex;
-  min-width: 0;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 3px;
-  text-align: center;
-}
+.profile-title .profile-name-stack{display:flex;min-width:0;flex-direction:column;align-items:center;justify-content:center;gap:3px;text-align:center}
+.profile-title .profile-name-stack>b{display:block;max-width:100%;line-height:1.2;overflow-wrap:anywhere}
+.profile-subtitle{display:block;max-width:100%;margin:0;font-size:9px!important;font-weight:400;line-height:1.35;letter-spacing:.02em;white-space:pre-wrap;overflow-wrap:anywhere}
 
-.profile-title .profile-name-stack > b {
-  display: block;
-  max-width: 100%;
-  line-height: 1.2;
-  overflow-wrap: anywhere;
-}
+.subtitle-editor,.pair-title-editor{margin:-5px 0 16px;padding:11px;border:1px solid #ded6cb;border-radius:10px;background:#fff;box-shadow:0 4px 13px rgba(55,48,40,.04)}
+.subtitle-editor>label,.pair-title-editor>label{display:block;margin-bottom:10px}
+.subtitle-editor>label:last-child,.pair-title-editor>label:last-child{margin-bottom:0}
+.subtitle-editor label>span,.pair-title-editor label>span{display:block;margin-bottom:6px;color:#5e574f;font-size:10px;font-weight:700}
+.subtitle-editor input[type="text"],.pair-title-editor input[type="text"]{width:100%;height:38px;padding:8px 9px;border:0;border-radius:7px;outline:0;background:#f8f6f2;color:#625e58;box-shadow:inset 0 0 0 1px rgba(118,105,91,.08);font-size:11px;user-select:text;pointer-events:auto}
+.subtitle-editor input[type="text"]:focus,.pair-title-editor input[type="text"]:focus{background:#fff;box-shadow:inset 0 0 0 1px #aca094,0 0 0 3px rgba(172,160,148,.12)}
+.subtitle-color-control{display:grid!important;grid-template-columns:1fr 74px;align-items:center;margin-top:10px;padding-top:10px;border-top:1px solid #ebe5dc}
+.subtitle-color-control>span{margin:0!important}.subtitle-color-control input[type="color"]{appearance:none;width:74px;height:34px;padding:0;overflow:hidden;border:1px solid #ded7ce;border-radius:7px;background:#fff;cursor:pointer}.subtitle-color-control input[type="color"]::-webkit-color-swatch-wrapper{padding:0}.subtitle-color-control input[type="color"]::-webkit-color-swatch{border:0}.subtitle-color-control input[type="color"]::-moz-color-swatch{border:0}
 
-.profile-subtitle {
-  display: block;
-  max-width: 100%;
-  margin: 0;
-  font-weight: 400;
-  line-height: 1.35;
-  letter-spacing: .02em;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-}
+.pair-title-editor{margin:0 0 18px}.pair-title-editor-head{display:flex;align-items:flex-end;justify-content:space-between;gap:8px;margin-bottom:12px;padding-bottom:9px;border-bottom:1px solid #ebe5dc}.pair-title-editor-head b{font-size:13px;color:#4f4942}.pair-title-editor-head span{font-size:8px;color:#948c82;text-align:right}
+.pair-title-display{display:flex;min-height:92px;flex-direction:column;align-items:center;justify-content:center;padding:18px 28px 12px;text-align:center;background:var(--paper)}
+.pair-title-display b{display:block;font-size:31px!important;font-weight:700;line-height:1.15;letter-spacing:.025em;color:#2e2b27;overflow-wrap:anywhere}
+.pair-title-display small{display:block;margin-top:6px;font-size:10px!important;font-weight:400;line-height:1.4;letter-spacing:.08em;color:#918980;overflow-wrap:anywhere}
+.pair-title-display[hidden]{display:none}
 
-/* Character-tab subtitle controls */
-.subtitle-editor {
-  margin: -5px 0 16px;
-  padding: 11px;
-  border: 1px solid #ded6cb;
-  border-radius: 10px;
-  background: #fff;
-  box-shadow: 0 4px 13px rgba(55,48,40,.04);
-}
+.font-upload-control{position:relative;display:grid;grid-template-columns:1fr auto;align-items:center;gap:8px;margin-top:10px;padding:10px 11px;border:1px dashed #cfc6ba;border-radius:8px;background:#faf8f4;cursor:pointer}.font-upload-control>span{font-size:10px;font-weight:700;color:#625b53}.font-upload-control>small{font-size:8px;color:#968e84}.font-upload-control input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
 
-.subtitle-editor > label {
-  display: block;
-}
-
-.subtitle-editor > label > span,
-.subtitle-style-row label > span {
-  display: block;
-  margin-bottom: 6px;
-  color: #5e574f;
-  font-size: 10px;
-  font-weight: 700;
-}
-
-.subtitle-editor input[type="text"] {
-  width: 100%;
-  height: 38px;
-  padding: 8px 9px;
-  border: 0;
-  border-radius: 7px;
-  outline: 0;
-  background: #f8f6f2;
-  color: #625e58;
-  box-shadow: inset 0 0 0 1px rgba(118,105,91,.08);
-  font-size: 11px;
-}
-
-.subtitle-editor input[type="text"]:focus {
-  background: #fff;
-  box-shadow: inset 0 0 0 1px #aca094, 0 0 0 3px rgba(172,160,148,.12);
-}
-
-.subtitle-style-row {
-  display: grid;
-  grid-template-columns: 88px minmax(0,1fr);
-  gap: 10px;
-  align-items: end;
-  margin-top: 10px;
-  padding-top: 10px;
-  border-top: 1px solid #ebe5dc;
-}
-
-.subtitle-color-control input[type="color"] {
-  appearance: none;
-  width: 100%;
-  height: 34px;
-  padding: 0;
-  overflow: hidden;
-  border: 1px solid #ded7ce;
-  border-radius: 7px;
-  background: #fff;
-  cursor: pointer;
-}
-
-.subtitle-color-control input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
-.subtitle-color-control input[type="color"]::-webkit-color-swatch { border: 0; }
-.subtitle-color-control input[type="color"]::-moz-color-swatch { border: 0; }
-
-.subtitle-size-control {
-  min-width: 0;
-}
-
-.subtitle-size-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.subtitle-size-head b {
-  color: #8c847b;
-  font-size: 9px;
-}
-
-.subtitle-size-control input[type="range"] {
-  width: 100%;
-  accent-color: #49443e;
-}
+/* Old Georgia shorthand rules must not override the selected sheet font. */
+.sheet .profile-title b,.sheet .quote,.sheet .quote-text,.sheet .facts,.sheet .text-block h3,.sheet .text-block p,.sheet .formatted-lines,.sheet .commission-block,.sheet .commission-block b,.sheet .commission-block span,.sheet .commission-block small{font-family:var(--app-font)!important}
