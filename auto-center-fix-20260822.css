@@ -1,0 +1,10 @@
+/* Compact vertical card + symmetric auto-centering. Loaded last. */
+#sheet.sheet,
+.welog-exact-preview-sheet{
+  min-height:0!important;
+}
+#sheet>.sheet-grid,
+.welog-exact-preview-sheet>.sheet-grid{
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
