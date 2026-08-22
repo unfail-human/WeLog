@@ -1,0 +1,5 @@
+:root{--welog-ui-font:Pretendard,"Noto Sans KR",Arial,sans-serif}
+body,.topbar,.inspector,.controls,.inspector-tabs,.slot-panel,.image-editor,.welog-exact-preview-head,.welog-layout-hud{font-family:var(--welog-ui-font)!important}
+.inspector button,.inspector input,.inspector textarea,.inspector select,.controls button,.controls input,.controls textarea,.controls select{font-family:inherit!important}
+/* The selected font belongs to the rendered sheet only. */
+#sheet,#sheet *,.welog-preview-sheet,.welog-preview-sheet *,.welog-exact-preview-sheet,.welog-exact-preview-sheet *{font-family:var(--welog-sheet-font,var(--app-font))!important}
