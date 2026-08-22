@@ -1,5 +1,4 @@
-/* Split central-image mode: balanced two-column canvas with crop controls. */
-:root{--welog-split-crop-top:0%;--welog-split-crop-right:0%;--welog-split-crop-bottom:0%;--welog-split-crop-left:0%}
+/* Split central-image mode. The artwork size is independent from the editable layout footprint. */
 #sheet .center .pair-split,
 .welog-preview-sheet .center .pair-split,
 .welog-exact-preview-sheet .center .pair-split,
@@ -18,8 +17,8 @@
   justify-self:center!important;
   margin-left:auto!important;
   margin-right:auto!important;
-  overflow:hidden!important;
-  clip-path:inset(var(--welog-split-crop-top) var(--welog-split-crop-right) var(--welog-split-crop-bottom) var(--welog-split-crop-left))!important;
+  overflow:visible!important;
+  clip-path:none!important;
 }
 #sheet .center .pair-split>.pair-image,
 .welog-preview-sheet .center .pair-split>.pair-image,
@@ -34,7 +33,7 @@
   aspect-ratio:auto!important;
   box-sizing:border-box!important;
   border-radius:8px!important;
-  overflow:hidden!important;
+  overflow:visible!important;
 }
 #sheet .center .pair-split>.pair-image img,
 .welog-preview-sheet .center .pair-split>.pair-image img,
@@ -47,7 +46,6 @@
 #sheet .center,
 .welog-preview-sheet .center,
 .welog-exact-preview-sheet .center,
-.welog-master-export .center{min-width:300px!important}
-
-.welog-split-area-control{margin:10px 0 14px;padding:12px;border:1px solid #ddd5ca;border-radius:10px;background:#fffdfa}
-.welog-split-area-control[hidden]{display:none!important}.welog-split-area-control .welog-split-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:9px}.welog-split-area-control .welog-split-head b{font-size:11px;color:#514b44}.welog-split-area-control .welog-split-head span{font-size:8px;line-height:1.4;text-align:right;color:#8d857b}.welog-split-crop-row{display:grid;grid-template-columns:34px minmax(0,1fr) 42px;gap:8px;align-items:center;margin:7px 0}.welog-split-crop-row>span{font-size:9px;font-weight:700;color:#655e56}.welog-split-crop-row input{width:100%;accent-color:#6b5947}.welog-split-crop-row output{font-size:9px;text-align:right;color:#6d645a}.welog-split-area-control button{margin-top:7px;width:100%;height:30px;border:1px solid #ddd4c8;border-radius:7px;background:#fff;color:#665c52;font-size:9px}.welog-split-area-control small{display:block;margin-top:7px;font-size:8px;line-height:1.45;color:#a0978c}
+.welog-master-export .center{min-width:300px!important;overflow:visible!important}
+/* Legacy slider crop UI is retired. Bounds are edited directly in the layout tool. */
+.welog-split-area-control{display:none!important}
