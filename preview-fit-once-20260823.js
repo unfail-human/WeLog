@@ -23,7 +23,7 @@ function open(){
   document.body.appendChild(modal);document.body.style.overflow='hidden';active=true;
   var holder=modal.querySelector('.welog-fit-preview-holder'),viewport=modal.querySelector('.welog-fit-preview-viewport');
   var naturalW=sheet.offsetWidth||sheet.getBoundingClientRect().width;
-  var naturalH=Math.max(sheet.scrollHeight,sheet.offsetHeight, sheet.getBoundingClientRect().height);
+  var naturalH=Math.max(sheet.scrollHeight,sheet.offsetHeight,sheet.getBoundingClientRect().height);
   holder.appendChild(sheet);
   sheet.style.setProperty('margin','0','important');
   sheet.style.setProperty('transform-origin','top left','important');
@@ -31,7 +31,12 @@ function open(){
     var cs=getComputedStyle(viewport),px=parseFloat(cs.paddingLeft||0)+parseFloat(cs.paddingRight||0),py=parseFloat(cs.paddingTop||0)+parseFloat(cs.paddingBottom||0);
     var aw=Math.max(100,viewport.clientWidth-px),ah=Math.max(100,viewport.clientHeight-py);
     var scale=Math.min(aw/naturalW,ah/naturalH,1);
-    holder.style.width=(naturalW*scale)+'px';holder.style.height=(naturalH*scale)+'px';
+    holder.style.width=Math.round(naturalW*scale)+'px';
+    holder.style.height=Math.round(naturalH*scale)+'px';
+    holder.style.margin='auto';
+    sheet.style.setProperty('width',naturalW+'px','important');
+    sheet.style.setProperty('min-width',naturalW+'px','important');
+    sheet.style.setProperty('max-width',naturalW+'px','important');
     sheet.style.setProperty('transform','scale('+scale+')','important');
   })});
   modal.querySelector('.welog-fit-preview-close').onclick=restore;
