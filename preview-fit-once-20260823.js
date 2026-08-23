@@ -1,36 +1,43 @@
 (function(){
 'use strict';
-function close(){var m=document.querySelector('.welog-fit-preview');if(m)m.remove();document.body.style.overflow=''}
+var placeholder=null,parent=null,next=null,oldStyle=null,active=false;
+function restore(){
+  if(!active)return;
+  var sheet=document.getElementById('sheet');
+  if(sheet&&parent){
+    if(next&&next.parentNode===parent)parent.insertBefore(sheet,next);else parent.appendChild(sheet);
+    if(oldStyle===null)sheet.removeAttribute('style');else sheet.setAttribute('style',oldStyle);
+  }
+  if(placeholder&&placeholder.parentNode)placeholder.remove();
+  var m=document.querySelector('.welog-fit-preview');if(m)m.remove();
+  document.body.style.overflow='';
+  placeholder=parent=next=null;oldStyle=null;active=false;
+}
 function open(){
-  close();
-  var source=document.getElementById('sheet');if(!source)return;
+  restore();
+  var sheet=document.getElementById('sheet');if(!sheet)return;
+  parent=sheet.parentNode;next=sheet.nextSibling;oldStyle=sheet.getAttribute('style');
+  placeholder=document.createComment('welog-sheet-home');parent.insertBefore(placeholder,sheet);
   var modal=document.createElement('div');modal.className='welog-fit-preview';
-  modal.innerHTML='<section class="welog-fit-preview-dialog"><header class="welog-fit-preview-head"><div><b>미리보기</b><small>작업화면 전체 보기</small></div><button type="button" class="welog-fit-preview-close">×</button></header><div class="welog-fit-preview-viewport"><div class="welog-fit-preview-holder"></div></div></section>';
-  document.body.appendChild(modal);document.body.style.overflow='hidden';
+  modal.innerHTML='<section class="welog-fit-preview-dialog"><header class="welog-fit-preview-head"><div><b>미리보기</b><small>현재 작업화면 그대로</small></div><button type="button" class="welog-fit-preview-close">×</button></header><div class="welog-fit-preview-viewport"><div class="welog-fit-preview-holder"></div></div></section>';
+  document.body.appendChild(modal);document.body.style.overflow='hidden';active=true;
   var holder=modal.querySelector('.welog-fit-preview-holder'),viewport=modal.querySelector('.welog-fit-preview-viewport');
-  var clone=source.cloneNode(true);
-  /* Keep #sheet so every existing #sheet-scoped rule is applied exactly as in the editor. */
-  clone.id='sheet';clone.classList.add('welog-fit-preview-sheet');
-  clone.style.setProperty('transform','none','important');clone.style.setProperty('transform-origin','top left','important');clone.style.setProperty('margin','0','important');
-  holder.appendChild(clone);
+  var naturalW=sheet.offsetWidth||sheet.getBoundingClientRect().width;
+  var naturalH=Math.max(sheet.scrollHeight,sheet.offsetHeight, sheet.getBoundingClientRect().height);
+  holder.appendChild(sheet);
+  sheet.style.setProperty('margin','0','important');
+  sheet.style.setProperty('transform-origin','top left','important');
   requestAnimationFrame(function(){requestAnimationFrame(function(){
-    var naturalW=source.offsetWidth||source.scrollWidth||1060;
-    var naturalH=Math.max(source.scrollHeight,source.offsetHeight||0);
-    clone.style.setProperty('width',naturalW+'px','important');
-    clone.style.setProperty('min-width',naturalW+'px','important');
-    clone.style.setProperty('max-width','none','important');
-    clone.style.setProperty('height',naturalH+'px','important');
-    clone.style.setProperty('min-height',naturalH+'px','important');
-    var cs=getComputedStyle(viewport),padX=parseFloat(cs.paddingLeft||0)+parseFloat(cs.paddingRight||0),padY=parseFloat(cs.paddingTop||0)+parseFloat(cs.paddingBottom||0);
-    var availW=Math.max(100,viewport.clientWidth-padX),availH=Math.max(100,viewport.clientHeight-padY);
-    var scale=Math.min(availW/naturalW,availH/naturalH,1);
+    var cs=getComputedStyle(viewport),px=parseFloat(cs.paddingLeft||0)+parseFloat(cs.paddingRight||0),py=parseFloat(cs.paddingTop||0)+parseFloat(cs.paddingBottom||0);
+    var aw=Math.max(100,viewport.clientWidth-px),ah=Math.max(100,viewport.clientHeight-py);
+    var scale=Math.min(aw/naturalW,ah/naturalH,1);
     holder.style.width=(naturalW*scale)+'px';holder.style.height=(naturalH*scale)+'px';
-    clone.style.setProperty('transform','scale('+scale+')','important');
+    sheet.style.setProperty('transform','scale('+scale+')','important');
   })});
-  modal.querySelector('.welog-fit-preview-close').onclick=close;
-  modal.addEventListener('click',function(e){if(e.target===modal)close()});
+  modal.querySelector('.welog-fit-preview-close').onclick=restore;
+  modal.addEventListener('click',function(e){if(e.target===modal)restore()});
 }
 function install(){var old=document.getElementById('previewBtn');if(!old)return;var b=old.cloneNode(true);old.replaceWith(b);b.addEventListener('click',function(e){e.preventDefault();e.stopImmediatePropagation();open()},true)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install);else install();setTimeout(install,150);
-window.addEventListener('keydown',function(e){if(e.key==='Escape')close()});
+window.addEventListener('keydown',function(e){if(e.key==='Escape')restore()});
 })();
