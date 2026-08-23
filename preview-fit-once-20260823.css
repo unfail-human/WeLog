@@ -1,11 +1,11 @@
-/* Preview: preserve the exact working-sheet proportions, but fit the entire sheet inside the popup at once. */
+/* Preview: show the real working sheet, fitted and centered in both axes. */
 .welog-fit-preview[hidden]{display:none!important}
 .welog-fit-preview{position:fixed;inset:0;z-index:3000;display:grid;place-items:center;padding:18px;background:rgba(38,34,30,.56);backdrop-filter:blur(3px)}
 .welog-fit-preview-dialog{position:relative;width:min(96vw,1500px);height:min(95vh,1100px);display:flex;flex-direction:column;overflow:hidden;border-radius:16px;background:#f6f2eb;box-shadow:0 28px 90px rgba(0,0,0,.28)}
 .welog-fit-preview-head{height:54px;flex:0 0 54px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;background:#fff;border-bottom:1px solid #e5ded4}
 .welog-fit-preview-head b{font-size:14px}.welog-fit-preview-head small{display:block;margin-top:2px;font-size:8px;color:#948b80;letter-spacing:.08em}
 .welog-fit-preview-close{width:34px;height:34px;border:0;background:transparent;font-size:25px;cursor:pointer;color:#746b62}
-.welog-fit-preview-viewport{position:relative;flex:1;min-height:0;overflow:hidden;display:flex;align-items:center;justify-content:center;padding:18px;background:#dedbd4}
-.welog-fit-preview-holder{position:relative;flex:none;display:block}
-.welog-fit-preview-sheet{position:absolute!important;left:0!important;top:0!important;margin:0!important;transform-origin:top left!important;box-shadow:0 18px 55px rgba(63,54,45,.14)!important;pointer-events:none!important}
+.welog-fit-preview-viewport{position:relative;flex:1;min-width:0;min-height:0;overflow:hidden!important;display:grid!important;place-items:center!important;padding:18px;background:#dedbd4}
+.welog-fit-preview-holder{position:relative!important;display:block!important;flex:none!important;margin:auto!important;align-self:center!important;justify-self:center!important}
+.welog-fit-preview-holder>#sheet{position:absolute!important;left:0!important;top:0!important;margin:0!important;transform-origin:top left!important;box-shadow:0 18px 55px rgba(63,54,45,.14)!important}
 @media(max-width:950px){.welog-fit-preview{padding:8px}.welog-fit-preview-dialog{width:98vw;height:97vh}.welog-fit-preview-viewport{padding:10px}}
