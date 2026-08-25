@@ -1,6 +1,6 @@
 (function(){
 'use strict';
-var VERSION='26',STATE_KEY='welog-pair-sheet-v4';
+var VERSION='27',STATE_KEY='welog-pair-sheet-v4';
 function frame(){return new Promise(function(r){requestAnimationFrame(function(){requestAnimationFrame(r)})})}
 async function ready(sheet){if(document.fonts){try{await document.fonts.ready}catch(e){}}await Promise.all([].slice.call(sheet.querySelectorAll('img')).map(function(im){if(im.complete)return Promise.resolve();return new Promise(function(r){im.addEventListener('load',r,{once:true});im.addEventListener('error',r,{once:true});setTimeout(r,1800)})}));await frame()}
 function filename(){try{return((JSON.parse(localStorage.getItem(STATE_KEY)||'{}').pairName||'WeLog').trim()||'WeLog')+'.png'}catch(e){return'WeLog.png'}}
@@ -15,7 +15,10 @@ async function exportPng(){
   var stage=sheet.closest('.stage')||sheet.parentElement,stageRect=stage.getBoundingClientRect(),sheetRect=sheet.getBoundingClientRect(),hidden=[];
   sheet.querySelectorAll('.direct-bounds-overlay-fixed,.welog-layout-overlay-fixed,.welog-layout-hud,.st-toolbar,.st-resize,.st-rotate,.st-v2-lock,.st-v2-del,.st-v2-resize,.direct-crop-ui,.guide-line').forEach(function(el){hidden.push([el,el.style.visibility]);el.style.visibility='hidden'});
   await frame();
-  var scene;try{scene=await window.html2canvas(stage,{scale:1,useCORS:true,allowTaint:false,backgroundColor:getComputedStyle(stage).backgroundColor||'#fff',logging:false,imageTimeout:4000,width:Math.ceil(stageRect.width),height:Math.ceil(stageRect.height),scrollX:0,scrollY:0})}finally{hidden.forEach(function(x){x[0].style.visibility=x[1]})}
+  var scene,stageBg=getComputedStyle(stage).backgroundColor||'#fff';try{
+   try{scene=await window.html2canvas(stage,{scale:1,useCORS:true,allowTaint:false,backgroundColor:stageBg,logging:false,imageTimeout:8000,width:Math.ceil(stageRect.width),height:Math.ceil(stageRect.height),scrollX:0,scrollY:0})}
+   catch(primary){if(!window.htmlToImage||!window.htmlToImage.toCanvas)throw primary;console.warn('html2canvas stage capture failed; using html-to-image',primary);scene=await window.htmlToImage.toCanvas(stage,{pixelRatio:1,backgroundColor:stageBg,cacheBust:false,skipAutoScale:true,width:Math.ceil(stageRect.width),height:Math.ceil(stageRect.height)})}
+  }finally{hidden.forEach(function(x){x[0].style.visibility=x[1]})}
   var ratioX=scene.width/stageRect.width,ratioY=scene.height/stageRect.height,sx=Math.max(0,Math.round((sheetRect.left-stageRect.left)*ratioX)),sy=Math.max(0,Math.round((sheetRect.top-stageRect.top)*ratioY)),sw=Math.min(scene.width-sx,Math.round(sheetRect.width*ratioX)),sh=Math.min(scene.height-sy,Math.round(sheetRect.height*ratioY));
   var output=document.createElement('canvas');output.width=Math.max(1,sw);output.height=Math.max(1,sh);output.getContext('2d').drawImage(scene,sx,sy,sw,sh,0,0,sw,sh);var url=output.toDataURL('image/png');
   download(url);
