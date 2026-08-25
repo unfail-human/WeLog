@@ -1,6 +1,6 @@
 (function(){
 'use strict';
-var VERSION='32',STATE_KEY='welog-pair-sheet-v4';
+var VERSION='33',STATE_KEY='welog-pair-sheet-v4';
 function frame(){return new Promise(function(r){requestAnimationFrame(function(){requestAnimationFrame(r)})})}
 async function ready(sheet){if(document.fonts){try{await document.fonts.ready}catch(e){}}await Promise.all([].slice.call(sheet.querySelectorAll('img')).map(function(im){if(im.complete)return Promise.resolve();return new Promise(function(r){im.addEventListener('load',r,{once:true});im.addEventListener('error',r,{once:true});setTimeout(r,1800)})}));await frame()}
 function filename(){try{return((JSON.parse(localStorage.getItem(STATE_KEY)||'{}').pairName||'WeLog').trim()||'WeLog')+'.png'}catch(e){return'WeLog.png'}}
@@ -8,7 +8,7 @@ function download(url){var a=document.createElement('a');a.href=url;a.download=f
 async function captureRealPixels(sheet){
  if(!navigator.mediaDevices||!navigator.mediaDevices.getDisplayMedia)throw new Error('screen capture unavailable');
  var stream=await navigator.mediaDevices.getDisplayMedia({video:{displaySurface:'browser',frameRate:{ideal:1,max:5}},audio:false,preferCurrentTab:true,selfBrowserSurface:'include',surfaceSwitching:'exclude'}),video=document.createElement('video');
- try{video.muted=true;video.srcObject=stream;await video.play();await new Promise(function(resolve){if(video.readyState>=2){requestAnimationFrame(resolve);return}video.onloadeddata=function(){requestAnimationFrame(resolve)}});var r=sheet.getBoundingClientRect(),sx=video.videoWidth/window.innerWidth,sy=video.videoHeight/window.innerHeight,x=Math.max(0,Math.round(r.left*sx)),y=Math.max(0,Math.round(r.top*sy)),w=Math.min(video.videoWidth-x,Math.round(r.width*sx)),h=Math.min(video.videoHeight-y,Math.round(r.height*sy)),canvas=document.createElement('canvas');canvas.width=Math.max(1,w);canvas.height=Math.max(1,h);canvas.getContext('2d').drawImage(video,x,y,w,h,0,0,w,h);return canvas.toDataURL('image/png')}
+ try{var track=stream.getVideoTracks()[0],settings=track&&track.getSettings?track.getSettings():{};if(settings.displaySurface&&settings.displaySurface!=='browser'){var wrong=new Error('현재 WeLog 탭을 선택해 주세요.');wrong.name='WrongSurfaceError';throw wrong}video.muted=true;video.srcObject=stream;await video.play();await new Promise(function(resolve){if(video.readyState>=2){requestAnimationFrame(resolve);return}video.onloadeddata=function(){requestAnimationFrame(resolve)}});var r=sheet.getBoundingClientRect(),sx=video.videoWidth/window.innerWidth,sy=video.videoHeight/window.innerHeight,x=Math.max(0,Math.round(r.left*sx)),y=Math.max(0,Math.round(r.top*sy)),w=Math.min(video.videoWidth-x,Math.round(r.width*sx)),h=Math.min(video.videoHeight-y,Math.round(r.height*sy)),canvas=document.createElement('canvas');canvas.width=Math.max(1,w);canvas.height=Math.max(1,h);canvas.getContext('2d').drawImage(video,x,y,w,h,0,0,w,h);return canvas.toDataURL('image/png')}
  finally{stream.getTracks().forEach(function(track){track.stop()});video.srcObject=null}
 }
 async function exportPng(){
@@ -16,8 +16,17 @@ async function exportPng(){
  var text=button.textContent;
  button.disabled=true;button.textContent='저장 중…';
  try{
+  /* 화면 공유 요청은 클릭 직후 실행해야 한다. 먼저 await하면 사용자 활성화가
+     사라져 실제 캡처 대신 폰트가 다른 예비 렌더러가 실행된다. */
+  if(navigator.mediaDevices&&navigator.mediaDevices.getDisplayMedia){
+   try{var exactUrl=await captureRealPixels(sheet);download(exactUrl);return}
+   catch(screenError){
+    if(screenError&&screenError.name==='WrongSurfaceError')throw screenError;
+    if(screenError&&screenError.name==='NotAllowedError')throw new Error('현재 탭 캡처가 취소되었습니다.');
+    throw new Error('현재 작업화면을 캡처하지 못했습니다. 다시 PNG 저장을 눌러 현재 WeLog 탭을 선택해 주세요.');
+   }
+  }
   if(window.WeLogApplyFont)await window.WeLogApplyFont();await ready(sheet);
-  try{var exactUrl=await captureRealPixels(sheet);download(exactUrl);return}catch(screenError){if(screenError&&screenError.name==='NotAllowedError')throw new Error('현재 탭 캡처가 취소되었습니다.');console.warn('real pixel capture unavailable; using renderer fallback',screenError)}
   if(!window.html2canvas)throw new Error('PNG renderer unavailable');
   var stage=sheet.closest('.stage')||sheet.parentElement,stageRect=stage.getBoundingClientRect(),sheetRect=sheet.getBoundingClientRect(),hidden=[];
   sheet.querySelectorAll('.direct-bounds-overlay-fixed,.welog-layout-overlay-fixed,.welog-layout-hud,.st-toolbar,.st-resize,.st-rotate,.st-v2-lock,.st-v2-del,.st-v2-resize,.direct-crop-ui,.guide-line').forEach(function(el){hidden.push([el,el.style.visibility]);el.style.visibility='hidden'});
