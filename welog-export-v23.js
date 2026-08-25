@@ -1,6 +1,6 @@
 (function(){
 'use strict';
-var VERSION='23',STATE_KEY='welog-pair-sheet-v4';
+var VERSION='24',STATE_KEY='welog-pair-sheet-v4';
 function frame(){return new Promise(function(r){requestAnimationFrame(function(){requestAnimationFrame(r)})})}
 async function ready(sheet){if(document.fonts){try{await document.fonts.ready}catch(e){}}await Promise.all([].slice.call(sheet.querySelectorAll('img')).map(function(im){if(im.complete)return Promise.resolve();return new Promise(function(r){im.addEventListener('load',r,{once:true});im.addEventListener('error',r,{once:true});setTimeout(r,1800)})}));await frame()}
 function filename(){try{return((JSON.parse(localStorage.getItem(STATE_KEY)||'{}').pairName||'WeLog').trim()||'WeLog')+'.png'}catch(e){return'WeLog.png'}}
@@ -13,11 +13,12 @@ async function exportPng(){
   await ready(sheet);
   for(var p=sheet.parentElement;p&&p!==document.body;p=p.parentElement){parents.push([p,p.scrollLeft,p.scrollTop,p.style.overflow]);p.scrollLeft=0;p.scrollTop=0;if(p.classList.contains('stage')||p.classList.contains('welog-fit-preview-viewport'))p.style.overflow='visible'}
   sheet.style.transform='none';sheet.style.transformOrigin='top left';await frame();
-  var width=Math.ceil(sheet.offsetWidth),height=Math.ceil(sheet.offsetHeight),bg=getComputedStyle(sheet).backgroundColor||'#fff',url;
+  var base=sheet.getBoundingClientRect(),contentRight=base.width,contentBottom=base.height;sheet.querySelectorAll('*').forEach(function(el){var r=el.getBoundingClientRect();contentRight=Math.max(contentRight,r.right-base.left);contentBottom=Math.max(contentBottom,r.bottom-base.top)});
+  var width=Math.ceil(Math.max(sheet.offsetWidth,sheet.scrollWidth,contentRight)),height=Math.ceil(Math.max(sheet.offsetHeight,sheet.scrollHeight,contentBottom)),bg=getComputedStyle(sheet).backgroundColor||'#fff',url;
   if(window.htmlToImage&&window.htmlToImage.toPng){
-   url=await window.htmlToImage.toPng(sheet,{pixelRatio:1,width:width,height:height,backgroundColor:bg,cacheBust:true,skipAutoScale:true,style:{width:width+'px',height:height+'px',maxWidth:'none',transform:'none',transformOrigin:'top left',margin:'0'}});
+   url=await window.htmlToImage.toPng(sheet,{pixelRatio:1,width:width,height:height,backgroundColor:bg,cacheBust:true,skipAutoScale:true,style:{width:width+'px',height:height+'px',minHeight:height+'px',maxWidth:'none',maxHeight:'none',overflow:'visible',transform:'none',transformOrigin:'top left',margin:'0'}});
   }else if(window.html2canvas){
-   var canvas=await window.html2canvas(sheet,{scale:1,useCORS:true,backgroundColor:bg,logging:false,imageTimeout:4000,onclone:function(doc){var s=doc.getElementById('sheet');if(s){s.style.transform='none';s.style.width=width+'px';s.style.height=height+'px'}}});url=canvas.toDataURL('image/png');
+   var canvas=await window.html2canvas(sheet,{scale:1,width:width,height:height,useCORS:true,backgroundColor:bg,logging:false,imageTimeout:4000,onclone:function(doc){var s=doc.getElementById('sheet');if(s){s.style.transform='none';s.style.width=width+'px';s.style.height=height+'px';s.style.minHeight=height+'px';s.style.maxHeight='none';s.style.overflow='visible'}}});url=canvas.toDataURL('image/png');
   }else throw new Error('PNG renderer unavailable');
   download(url);
  }catch(e){console.error('WeLog export v'+VERSION,e);alert('PNG 저장에 실패했습니다.');}
