@@ -24,17 +24,18 @@ async function save(){
 }
 
 function installWardrobeSync(){
-  var busy=false;
+  var busy=false,wardrobeLiveSrc='';
   function read(){try{return JSON.parse(localStorage.getItem(STATE_KEY)||'{}')||{}}catch(e){return{}}}
   function sync(){
     if(busy)return;busy=true;
     try{
       var sheet=document.getElementById('sheet');if(!sheet)return;
       var s=read(),panelImage=document.querySelector('.wardrobe-combined-preview img'),panelCheck=document.querySelector('.wardrobe-combined-control [data-bool-path="wardrobeEnabled"]');
-      var src=(panelImage&&panelImage.getAttribute('src'))||s.wardrobeImage||'';
+      var src=(panelImage&&panelImage.getAttribute('src'))||wardrobeLiveSrc||s.wardrobeImage||'';
       var enabled=panelCheck?panelCheck.checked:(s.wardrobeEnabled!==false&&!!src);
       enabled=enabled&&!!src;
-      var grid=sheet.querySelector('.sheet-grid');if(!grid)return;\n      var current=grid.querySelector(':scope > .sheet-wardrobe');
+      var grid=sheet.querySelector('.sheet-grid');if(!grid)return;
+      var current=grid.querySelector(':scope > .sheet-wardrobe');
       if(!enabled){if(current)current.remove();return}
       if(current&&current.querySelector('.wardrobe-combined-card img')&&current.querySelector('.wardrobe-combined-card img').getAttribute('src')===src)return;
       if(current)current.remove();
@@ -43,6 +44,21 @@ function installWardrobeSync(){
       grid.appendChild(section);
     }finally{busy=false}
   }
+  function renderPanel(src){
+    var box=document.querySelector('.wardrobe-combined-control');if(!box)return;
+    var check=box.querySelector('[data-bool-path="wardrobeEnabled"]');if(check)check.checked=true;
+    var upload=box.querySelector('.wardrobe-combined-upload');
+    if(upload){var preview=document.createElement('div');preview.className='wardrobe-combined-preview';preview.innerHTML='<button type="button" data-edit-image="wardrobeImage"><img src="'+src.replace(/"/g,'&quot;')+'" alt=""></button><button type="button" class="wardrobe-remove" data-wardrobe-remove>×</button>';upload.replaceWith(preview)}
+  }
+  function saveWardrobe(src){
+    wardrobeLiveSrc=src;
+    try{var s=read();s.wardrobeImage=src;s.wardrobeEnabled=true;s.wardrobeVersion=3;localStorage.setItem(STATE_KEY,JSON.stringify(s))}catch(e){}
+    renderPanel(src);sync();
+  }
+  function process(file){
+    var reader=new FileReader();reader.onload=function(){var im=new Image();im.onload=function(){var max=1600,ratio=Math.min(1,max/Math.max(im.width,im.height)),canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(im.width*ratio));canvas.height=Math.max(1,Math.round(im.height*ratio));canvas.getContext('2d').drawImage(im,0,0,canvas.width,canvas.height);saveWardrobe(canvas.toDataURL('image/webp',.88))};im.src=reader.result};reader.readAsDataURL(file)
+  }
+  document.addEventListener('change',function(e){var input=e.target.closest('[data-wardrobe-upload]');if(!input)return;var file=input.files&&input.files[0];if(!file)return;e.stopImmediatePropagation();process(file)},true);
   var observer=new MutationObserver(function(){requestAnimationFrame(sync)});
   observer.observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['checked','src']});
   document.addEventListener('change',function(e){if(e.target.matches('[data-bool-path="wardrobeEnabled"],[data-wardrobe-upload]'))setTimeout(sync,80)},true);
@@ -50,6 +66,6 @@ function installWardrobeSync(){
   sync();setTimeout(sync,300);setTimeout(sync,1200);
 }
 
-function install(){var old=document.getElementById('printBtn');if(!old)return;var button=old.cloneNode(true);old.replaceWith(button);button.dataset.liveSaveReady='13';button.addEventListener('click',function(e){e.preventDefault();e.stopImmediatePropagation();save()},true)}
+function install(){var old=document.getElementById('printBtn');if(!old)return;var button=old.cloneNode(true);old.replaceWith(button);button.dataset.liveSaveReady='14';button.addEventListener('click',function(e){e.preventDefault();e.stopImmediatePropagation();save()},true)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){install();installWardrobeSync()});else{install();installWardrobeSync()}setTimeout(install,500);
 })();
