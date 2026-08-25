@@ -11,3 +11,4 @@
 .crop-stage img{width:calc(100% - 56px);height:calc(100% - 56px);object-fit:contain}
 .richbar button.on{background:#302d29;color:#fff}
 .pair-title h1{position:relative;border-bottom:0!important}.pair-title h1:after{content:'';position:absolute;left:0;right:0;bottom:0;height:2px;border-radius:2px;background:linear-gradient(var(--angle),var(--pair1),var(--pair2));opacity:.65}
+.sheet-holder{position:relative!important;transform:none!important}.sheet-holder>.sheet{position:absolute!important;left:0;top:0;transform-origin:top left}
