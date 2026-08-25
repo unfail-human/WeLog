@@ -1,6 +1,6 @@
 (function(){
 'use strict';
-var VERSION='35',STATE_KEY='welog-pair-sheet-v4',MAX_PIXELS=16777216;
+var VERSION='36',STATE_KEY='welog-pair-sheet-v4';
 function frame(){return new Promise(function(resolve){requestAnimationFrame(function(){requestAnimationFrame(resolve)})})}
 function filename(){try{return((JSON.parse(localStorage.getItem(STATE_KEY)||'{}').pairName||'WeLog').trim()||'WeLog')+'.png'}catch(e){return'WeLog.png'}}
 function download(url){var a=document.createElement('a');a.href=url;a.download=filename();document.body.appendChild(a);a.click();a.remove()}
@@ -13,7 +13,7 @@ async function ready(root){
  await frame();
 }
 function makeClone(sheet){
- var root=sheet.closest('.stage')||sheet.parentElement,width=sheet.offsetWidth,height=sheet.scrollHeight,rootWidth=root.offsetWidth,marker='data-welog-export-target',wrapper=document.createElement('div');
+ var root=sheet.closest('.stage')||sheet.parentElement,width=sheet.offsetWidth,height=sheet.offsetHeight,rootWidth=root.offsetWidth,marker='data-welog-export-target',wrapper=document.createElement('div');
  sheet.setAttribute(marker,'');
  var rootClone=root.cloneNode(true);
  sheet.removeAttribute(marker);
@@ -25,14 +25,16 @@ function makeClone(sheet){
  clone.style.setProperty('width',width+'px','important');
  clone.style.setProperty('min-width',width+'px','important');
  clone.style.setProperty('max-width',width+'px','important');
- clone.style.setProperty('height','auto','important');
+ clone.style.setProperty('height',height+'px','important');
  clone.style.setProperty('min-height',height+'px','important');
+ clone.style.setProperty('max-height',height+'px','important');
+ clone.style.setProperty('overflow','hidden','important');
  rootClone.style.setProperty('width',rootWidth+'px','important');
  rootClone.style.setProperty('min-width',rootWidth+'px','important');
  rootClone.style.setProperty('max-width',rootWidth+'px','important');
  wrapper.style.position='fixed';wrapper.style.left='0';wrapper.style.top='0';wrapper.style.width='0';wrapper.style.height='0';wrapper.style.overflow='hidden';wrapper.style.pointerEvents='none';wrapper.style.zIndex='-2147483647';
  wrapper.appendChild(rootClone);document.body.appendChild(wrapper);
- return{wrapper:wrapper,clone:clone};
+ return{wrapper:wrapper,clone:clone,width:width,height:height};
 }
 function ignore(node){return !(node&&node.classList&&node.matches('.direct-bounds-overlay-fixed,.welog-layout-overlay-fixed,.welog-layout-hud,.st-toolbar,.st-resize,.st-rotate,.st-v2-lock,.st-v2-del,.st-v2-resize,.direct-crop-ui,.guide-line'))}
 async function renderSheet(sheet){
@@ -40,9 +42,9 @@ async function renderSheet(sheet){
  var made=makeClone(sheet);
  try{
   await ready(made.clone);
-  var rect=made.clone.getBoundingClientRect(),width=Math.max(1,Math.round(rect.width)),height=Math.max(1,Math.ceil(made.clone.scrollHeight)),ratio=Math.min(2,Math.sqrt(MAX_PIXELS/(width*height)))||1,fontCss='';
+  var width=Math.max(1,made.width),height=Math.max(1,made.height),fontCss='';
   if(window.htmlToImage.getFontEmbedCSS)fontCss=await window.htmlToImage.getFontEmbedCSS(sheet);
-  return await window.htmlToImage.toPng(made.clone,{width:width,height:height,canvasWidth:width,canvasHeight:height,pixelRatio:ratio,cacheBust:true,skipAutoScale:true,backgroundColor:getComputedStyle(sheet).backgroundColor||'#fff',fontEmbedCSS:fontCss,filter:ignore});
+  return await window.htmlToImage.toPng(made.clone,{width:width,height:height,canvasWidth:width,canvasHeight:height,pixelRatio:1,cacheBust:true,skipAutoScale:true,backgroundColor:getComputedStyle(sheet).backgroundColor||'#fff',fontEmbedCSS:fontCss,filter:ignore});
  }finally{made.wrapper.remove()}
 }
 async function exportPng(){
