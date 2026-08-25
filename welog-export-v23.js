@@ -1,47 +1,52 @@
 (function(){
 'use strict';
-var VERSION='33',STATE_KEY='welog-pair-sheet-v4';
-function frame(){return new Promise(function(r){requestAnimationFrame(function(){requestAnimationFrame(r)})})}
-async function ready(sheet){if(document.fonts){try{await document.fonts.ready}catch(e){}}await Promise.all([].slice.call(sheet.querySelectorAll('img')).map(function(im){if(im.complete)return Promise.resolve();return new Promise(function(r){im.addEventListener('load',r,{once:true});im.addEventListener('error',r,{once:true});setTimeout(r,1800)})}));await frame()}
+var VERSION='34',STATE_KEY='welog-pair-sheet-v4',MAX_PIXELS=16777216;
+function frame(){return new Promise(function(resolve){requestAnimationFrame(function(){requestAnimationFrame(resolve)})})}
 function filename(){try{return((JSON.parse(localStorage.getItem(STATE_KEY)||'{}').pairName||'WeLog').trim()||'WeLog')+'.png'}catch(e){return'WeLog.png'}}
 function download(url){var a=document.createElement('a');a.href=url;a.download=filename();document.body.appendChild(a);a.click();a.remove()}
-async function captureRealPixels(sheet){
- if(!navigator.mediaDevices||!navigator.mediaDevices.getDisplayMedia)throw new Error('screen capture unavailable');
- var stream=await navigator.mediaDevices.getDisplayMedia({video:{displaySurface:'browser',frameRate:{ideal:1,max:5}},audio:false,preferCurrentTab:true,selfBrowserSurface:'include',surfaceSwitching:'exclude'}),video=document.createElement('video');
- try{var track=stream.getVideoTracks()[0],settings=track&&track.getSettings?track.getSettings():{};if(settings.displaySurface&&settings.displaySurface!=='browser'){var wrong=new Error('현재 WeLog 탭을 선택해 주세요.');wrong.name='WrongSurfaceError';throw wrong}video.muted=true;video.srcObject=stream;await video.play();await new Promise(function(resolve){if(video.readyState>=2){requestAnimationFrame(resolve);return}video.onloadeddata=function(){requestAnimationFrame(resolve)}});var r=sheet.getBoundingClientRect(),sx=video.videoWidth/window.innerWidth,sy=video.videoHeight/window.innerHeight,x=Math.max(0,Math.round(r.left*sx)),y=Math.max(0,Math.round(r.top*sy)),w=Math.min(video.videoWidth-x,Math.round(r.width*sx)),h=Math.min(video.videoHeight-y,Math.round(r.height*sy)),canvas=document.createElement('canvas');canvas.width=Math.max(1,w);canvas.height=Math.max(1,h);canvas.getContext('2d').drawImage(video,x,y,w,h,0,0,w,h);return canvas.toDataURL('image/png')}
- finally{stream.getTracks().forEach(function(track){track.stop()});video.srcObject=null}
+async function ready(root){
+ if(document.fonts){try{await document.fonts.ready}catch(e){}}
+ await Promise.all([].slice.call(root.querySelectorAll('img')).map(function(img){
+  if(img.complete)return Promise.resolve();
+  return new Promise(function(resolve){img.addEventListener('load',resolve,{once:true});img.addEventListener('error',resolve,{once:true});setTimeout(resolve,2000)})
+ }));
+ await frame();
+}
+function makeClone(sheet){
+ var width=sheet.offsetWidth,height=sheet.scrollHeight,clone=sheet.cloneNode(true),wrapper=document.createElement('div');
+ clone.removeAttribute('id');
+ clone.setAttribute('data-welog-export','');
+ clone.style.setProperty('transform','none','important');
+ clone.style.setProperty('transform-origin','top left','important');
+ clone.style.setProperty('margin','0','important');
+ clone.style.setProperty('width',width+'px','important');
+ clone.style.setProperty('min-width',width+'px','important');
+ clone.style.setProperty('max-width',width+'px','important');
+ clone.style.setProperty('height','auto','important');
+ clone.style.setProperty('min-height',height+'px','important');
+ wrapper.style.position='fixed';wrapper.style.left='0';wrapper.style.top='0';wrapper.style.width='0';wrapper.style.height='0';wrapper.style.overflow='hidden';wrapper.style.pointerEvents='none';wrapper.style.zIndex='-2147483647';
+ wrapper.appendChild(clone);document.body.appendChild(wrapper);
+ return{wrapper:wrapper,clone:clone};
+}
+function ignore(node){return !(node&&node.classList&&node.matches('.direct-bounds-overlay-fixed,.welog-layout-overlay-fixed,.welog-layout-hud,.st-toolbar,.st-resize,.st-rotate,.st-v2-lock,.st-v2-del,.st-v2-resize,.direct-crop-ui,.guide-line'))}
+async function renderSheet(sheet){
+ if(!window.htmlToImage||!window.htmlToImage.toPng)throw new Error('PNG renderer unavailable');
+ var made=makeClone(sheet);
+ try{
+  await ready(made.clone);
+  var rect=made.clone.getBoundingClientRect(),width=Math.max(1,Math.round(rect.width)),height=Math.max(1,Math.ceil(made.clone.scrollHeight)),ratio=Math.min(2,Math.sqrt(MAX_PIXELS/(width*height)))||1,fontCss='';
+  if(window.htmlToImage.getFontEmbedCSS)fontCss=await window.htmlToImage.getFontEmbedCSS(sheet);
+  return await window.htmlToImage.toPng(made.clone,{width:width,height:height,canvasWidth:width,canvasHeight:height,pixelRatio:ratio,cacheBust:true,skipAutoScale:true,backgroundColor:getComputedStyle(sheet).backgroundColor||'#fff',fontEmbedCSS:fontCss,filter:ignore});
+ }finally{made.wrapper.remove()}
 }
 async function exportPng(){
  var sheet=document.getElementById('sheet'),button=document.getElementById('printBtn');if(!sheet||!button)return;
- var text=button.textContent;
- button.disabled=true;button.textContent='저장 중…';
- try{
-  /* 화면 공유 요청은 클릭 직후 실행해야 한다. 먼저 await하면 사용자 활성화가
-     사라져 실제 캡처 대신 폰트가 다른 예비 렌더러가 실행된다. */
-  if(navigator.mediaDevices&&navigator.mediaDevices.getDisplayMedia){
-   try{var exactUrl=await captureRealPixels(sheet);download(exactUrl);return}
-   catch(screenError){
-    if(screenError&&screenError.name==='WrongSurfaceError')throw screenError;
-    if(screenError&&screenError.name==='NotAllowedError')throw new Error('현재 탭 캡처가 취소되었습니다.');
-    throw new Error('현재 작업화면을 캡처하지 못했습니다. 다시 PNG 저장을 눌러 현재 WeLog 탭을 선택해 주세요.');
-   }
-  }
-  if(window.WeLogApplyFont)await window.WeLogApplyFont();await ready(sheet);
-  if(!window.html2canvas)throw new Error('PNG renderer unavailable');
-  var stage=sheet.closest('.stage')||sheet.parentElement,stageRect=stage.getBoundingClientRect(),sheetRect=sheet.getBoundingClientRect(),hidden=[];
-  sheet.querySelectorAll('.direct-bounds-overlay-fixed,.welog-layout-overlay-fixed,.welog-layout-hud,.st-toolbar,.st-resize,.st-rotate,.st-v2-lock,.st-v2-del,.st-v2-resize,.direct-crop-ui,.guide-line').forEach(function(el){hidden.push([el,el.style.visibility]);el.style.visibility='hidden'});
-  await frame();
-  var scene,stageBg=getComputedStyle(stage).backgroundColor||'#fff';try{
-   try{if(!window.htmlToImage||!window.htmlToImage.toCanvas)throw new Error('html-to-image unavailable');var fontCss='';if(window.htmlToImage.getFontEmbedCSS){try{fontCss=await window.htmlToImage.getFontEmbedCSS(stage)}catch(fontError){console.warn('font embedding skipped',fontError)}}scene=await window.htmlToImage.toCanvas(stage,{pixelRatio:1,backgroundColor:stageBg,cacheBust:false,skipAutoScale:true,fontEmbedCSS:fontCss,width:Math.ceil(stageRect.width),height:Math.ceil(stageRect.height)})}
-   catch(primary){console.warn('work-screen clone failed; using canvas fallback',primary);scene=await window.html2canvas(stage,{scale:1,useCORS:true,allowTaint:false,backgroundColor:stageBg,logging:false,imageTimeout:8000,width:Math.ceil(stageRect.width),height:Math.ceil(stageRect.height),scrollX:0,scrollY:0,onclone:function(doc){if(!doc.fonts)return;return doc.fonts.ready}})}
-  }finally{hidden.forEach(function(x){x[0].style.visibility=x[1]})}
-  var ratioX=scene.width/stageRect.width,ratioY=scene.height/stageRect.height,sx=Math.max(0,Math.round((sheetRect.left-stageRect.left)*ratioX)),sy=Math.max(0,Math.round((sheetRect.top-stageRect.top)*ratioY)),sw=Math.min(scene.width-sx,Math.round(sheetRect.width*ratioX)),sh=Math.min(scene.height-sy,Math.round(sheetRect.height*ratioY));
-  var output=document.createElement('canvas');output.width=Math.max(1,sw);output.height=Math.max(1,sh);output.getContext('2d').drawImage(scene,sx,sy,sw,sh,0,0,sw,sh);var url=output.toDataURL('image/png');
-  download(url);
- }catch(e){console.error('WeLog export v'+VERSION,e);alert('PNG 저장에 실패했습니다.');}
- finally{button.disabled=false;button.textContent=text}
+ var label=button.textContent;button.disabled=true;button.textContent='저장 중…';
+ try{if(window.WeLogApplyFont)await window.WeLogApplyFont();await ready(sheet);download(await renderSheet(sheet))}
+ catch(error){console.error('WeLog export v'+VERSION,error);alert('PNG 저장에 실패했습니다. 새로고침 후 다시 시도해 주세요.')}
+ finally{button.disabled=false;button.textContent=label}
 }
-function install(){var old=document.getElementById('printBtn');if(!old)return;var b=old.cloneNode(true);old.replaceWith(b);b.dataset.exportVersion=VERSION;b.addEventListener('click',function(e){e.preventDefault();e.stopImmediatePropagation();exportPng()},true)}
+function install(){var old=document.getElementById('printBtn');if(!old)return;var button=old.cloneNode(true);old.replaceWith(button);button.dataset.exportVersion=VERSION;button.addEventListener('click',function(event){event.preventDefault();event.stopImmediatePropagation();exportPng()},true)}
 function notice(){var key='welog-update-v'+VERSION;try{if(localStorage.getItem(key))return;localStorage.setItem(key,'1')}catch(e){}setTimeout(function(){alert('업데이트 되었습니다.')},300)}
 function start(){install();notice();setTimeout(install,700)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
