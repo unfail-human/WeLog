@@ -22,6 +22,31 @@ async function save(){
   }catch(error){console.error('WeLog PNG save failed',error);alert('PNG 저장에 실패했습니다. 새로고침 후 다시 시도해 주세요.')}
   finally{sheet.querySelectorAll(EDITOR_UI).forEach(function(el){el.style.display=el.dataset.exportDisplay||'';delete el.dataset.exportDisplay});button.disabled=false;button.textContent=label}
 }
-function install(){var old=document.getElementById('printBtn');if(!old)return;var button=old.cloneNode(true);old.replaceWith(button);button.dataset.liveSaveReady='10';button.addEventListener('click',function(e){e.preventDefault();e.stopImmediatePropagation();save()},true)}
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install);else install();setTimeout(install,500);
+
+function installWardrobeSync(){
+  var busy=false;
+  function read(){try{return JSON.parse(localStorage.getItem(STATE_KEY)||'{}')||{}}catch(e){return{}}}
+  function sync(){
+    if(busy)return;busy=true;
+    try{
+      var sheet=document.getElementById('sheet');if(!sheet)return;
+      var s=read(),src=s.wardrobeImage||'',enabled=s.wardrobeEnabled!==false&&!!src;
+      var current=sheet.querySelector(':scope > .sheet-wardrobe');
+      if(!enabled){if(current)current.remove();return}
+      if(current&&current.querySelector('.wardrobe-combined-card img')&&current.querySelector('.wardrobe-combined-card img').getAttribute('src')===src)return;
+      if(current)current.remove();
+      var section=document.createElement('section');section.className='sheet-wardrobe';
+      section.innerHTML='<div class="wardrobe-section-title"><span></span><h2>옷장</h2><span></span></div><button type="button" class="wardrobe-combined-card" data-edit-image="wardrobeImage"><img alt="" src="'+src.replace(/"/g,'&quot;')+'"></button>';
+      sheet.appendChild(section);
+    }finally{busy=false}
+  }
+  var observer=new MutationObserver(function(){requestAnimationFrame(sync)});
+  observer.observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['checked','src']});
+  document.addEventListener('change',function(e){if(e.target.matches('[data-bool-path="wardrobeEnabled"],[data-wardrobe-upload]'))setTimeout(sync,80)},true);
+  window.addEventListener('storage',sync);
+  sync();setTimeout(sync,300);setTimeout(sync,1200);
+}
+
+function install(){var old=document.getElementById('printBtn');if(!old)return;var button=old.cloneNode(true);old.replaceWith(button);button.dataset.liveSaveReady='11';button.addEventListener('click',function(e){e.preventDefault();e.stopImmediatePropagation();save()},true)}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){install();installWardrobeSync()});else{install();installWardrobeSync()}setTimeout(install,500);
 })();
