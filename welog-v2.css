@@ -28,3 +28,23 @@
 .concept-control>.group-title{margin-bottom:12px}
 .concept-control>.field{margin-top:0}
 .concept-control input[type=checkbox]{accent-color:#302d29}
+
+/* centered canvas */
+.workspace{display:flex;align-items:center;justify-content:center}
+.sheet-holder{flex:0 0 auto;margin:auto!important}
+
+/* main media editor */
+.main-media-section{margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}
+.subsection-title{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:10px}
+.subsection-title b{font-size:11px}.subsection-title small{color:#999188;font-size:8px}
+.inline-gallery{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.inline-gallery button{display:grid;grid-template-rows:64px auto;gap:6px;min-width:0;padding:6px;border:1px solid var(--line);border-radius:10px;background:#faf8f4;color:#6f6860;cursor:pointer}
+.inline-gallery img,.inline-gallery i{display:grid;place-items:center;width:100%;height:64px;border-radius:7px;background:#eee9e2;object-fit:contain;font-style:normal}
+.inline-gallery span{overflow:hidden;font-size:8px;text-align:center;text-overflow:ellipsis;white-space:nowrap}
+.sticker-section{margin-top:18px}.sticker-section .tool-card{width:100%}
+
+/* preview */
+.preview-dialog{width:min(1500px,calc(100vw - 40px));max-height:calc(100vh - 30px)}
+.preview-dialog .dialog-body{display:grid;place-items:center;overflow:auto;background:var(--work);padding:22px}
+.preview-frame{display:grid;place-items:center;min-width:100%}
+.preview-frame .sheet{position:relative!important;left:auto!important;top:auto!important;box-shadow:0 16px 50px #40372d22}
