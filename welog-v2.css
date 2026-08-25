@@ -63,3 +63,7 @@
 .facts{height:82px}.fact span{margin-bottom:8px;font-size:9px}.fact b{font-size:13px;line-height:1.35}
 .text-section{margin-top:29px}.text-section h3{margin-bottom:13px;font-size:17px}
 .text-section li{margin:10px 0;padding-left:18px;font-size:14px;line-height:1.65}.text-section li:before{width:6px;height:6px}
+
+/* commission notes centered on the entire sheet */
+.sheet>.bottom-notes{left:50%;right:auto;bottom:34px;max-width:none;align-items:center;justify-content:center;transform:translateX(-50%)}
+.sheet>.bottom-notes .credit{margin-left:10px;text-align:left}
