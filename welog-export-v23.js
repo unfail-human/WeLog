@@ -1,6 +1,6 @@
 (function(){
 'use strict';
-var VERSION='29',STATE_KEY='welog-pair-sheet-v4';
+var VERSION='30',STATE_KEY='welog-pair-sheet-v4';
 function frame(){return new Promise(function(r){requestAnimationFrame(function(){requestAnimationFrame(r)})})}
 async function ready(sheet){if(document.fonts){try{await document.fonts.ready}catch(e){}}await Promise.all([].slice.call(sheet.querySelectorAll('img')).map(function(im){if(im.complete)return Promise.resolve();return new Promise(function(r){im.addEventListener('load',r,{once:true});im.addEventListener('error',r,{once:true});setTimeout(r,1800)})}));await frame()}
 function filename(){try{return((JSON.parse(localStorage.getItem(STATE_KEY)||'{}').pairName||'WeLog').trim()||'WeLog')+'.png'}catch(e){return'WeLog.png'}}
@@ -10,7 +10,7 @@ async function exportPng(){
  var text=button.textContent;
  button.disabled=true;button.textContent='저장 중…';
  try{
-  await ready(sheet);
+  if(window.WeLogApplyFont)await window.WeLogApplyFont();await ready(sheet);
   if(!window.html2canvas)throw new Error('PNG renderer unavailable');
   var stage=sheet.closest('.stage')||sheet.parentElement,stageRect=stage.getBoundingClientRect(),sheetRect=sheet.getBoundingClientRect(),hidden=[];
   sheet.querySelectorAll('.direct-bounds-overlay-fixed,.welog-layout-overlay-fixed,.welog-layout-hud,.st-toolbar,.st-resize,.st-rotate,.st-v2-lock,.st-v2-del,.st-v2-resize,.direct-crop-ui,.guide-line').forEach(function(el){hidden.push([el,el.style.visibility]);el.style.visibility='hidden'});
