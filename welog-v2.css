@@ -12,3 +12,19 @@
 .richbar button.on{background:#302d29;color:#fff}
 .pair-title h1{position:relative;border-bottom:0!important}.pair-title h1:after{content:'';position:absolute;left:0;right:0;bottom:0;height:2px;border-radius:2px;background:linear-gradient(var(--angle),var(--pair1),var(--pair2));opacity:.65}
 .sheet-holder{position:relative!important;transform:none!important}.sheet-holder>.sheet{position:absolute!important;left:0;top:0;transform-origin:top left}
+
+/* viewport fit and editor scrolling */
+.app{min-height:0}
+.workspace{min-width:0;min-height:0;padding:12px}
+.inspector{height:100%;min-height:0;overflow:hidden}
+.controls{min-height:0;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable;padding:18px 18px 110px}
+
+/* relaxed character editor layout */
+.character-group{padding:18px;margin-bottom:22px}
+.character-group>.field{margin-top:15px}
+.character-group>.richbar{margin-top:8px;margin-bottom:20px}
+.character-group>.facts-control{gap:10px;margin:20px 0}
+.concept-control{margin-top:24px;padding-top:18px;border-top:1px solid var(--line)}
+.concept-control>.group-title{margin-bottom:12px}
+.concept-control>.field{margin-top:0}
+.concept-control input[type=checkbox]{accent-color:#302d29}
