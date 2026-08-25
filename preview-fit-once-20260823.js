@@ -23,7 +23,7 @@ function open(){
   document.body.appendChild(modal);document.body.style.overflow='hidden';active=true;
   var holder=modal.querySelector('.welog-fit-preview-holder'),viewport=modal.querySelector('.welog-fit-preview-viewport');
   var naturalW=sheet.offsetWidth||sheet.getBoundingClientRect().width;
-  var naturalH=Math.max(sheet.scrollHeight,sheet.offsetHeight,sheet.getBoundingClientRect().height);
+  var naturalH=Math.round(sheet.offsetHeight||sheet.getBoundingClientRect().height);
   holder.appendChild(sheet);
   sheet.style.setProperty('margin','0','important');
   sheet.style.setProperty('transform-origin','top left','important');
