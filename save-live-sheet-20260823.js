@@ -34,13 +34,13 @@ function installWardrobeSync(){
       var src=(panelImage&&panelImage.getAttribute('src'))||s.wardrobeImage||'';
       var enabled=panelCheck?panelCheck.checked:(s.wardrobeEnabled!==false&&!!src);
       enabled=enabled&&!!src;
-      var current=sheet.querySelector(':scope > .sheet-wardrobe');
+      var grid=sheet.querySelector('.sheet-grid');if(!grid)return;\n      var current=grid.querySelector(':scope > .sheet-wardrobe');
       if(!enabled){if(current)current.remove();return}
       if(current&&current.querySelector('.wardrobe-combined-card img')&&current.querySelector('.wardrobe-combined-card img').getAttribute('src')===src)return;
       if(current)current.remove();
       var section=document.createElement('section');section.className='sheet-wardrobe';
       section.innerHTML='<div class="wardrobe-section-title"><span></span><h2>옷장</h2><span></span></div><button type="button" class="wardrobe-combined-card" data-edit-image="wardrobeImage"><img alt="" src="'+src.replace(/"/g,'&quot;')+'"></button>';
-      sheet.appendChild(section);
+      grid.appendChild(section);
     }finally{busy=false}
   }
   var observer=new MutationObserver(function(){requestAnimationFrame(sync)});
@@ -50,6 +50,6 @@ function installWardrobeSync(){
   sync();setTimeout(sync,300);setTimeout(sync,1200);
 }
 
-function install(){var old=document.getElementById('printBtn');if(!old)return;var button=old.cloneNode(true);old.replaceWith(button);button.dataset.liveSaveReady='12';button.addEventListener('click',function(e){e.preventDefault();e.stopImmediatePropagation();save()},true)}
+function install(){var old=document.getElementById('printBtn');if(!old)return;var button=old.cloneNode(true);old.replaceWith(button);button.dataset.liveSaveReady='13';button.addEventListener('click',function(e){e.preventDefault();e.stopImmediatePropagation();save()},true)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){install();installWardrobeSync()});else{install();installWardrobeSync()}setTimeout(install,500);
 })();
