@@ -9,18 +9,7 @@ async function waitReady(sheet){
   await Promise.all(imgs.map(function(im){if(im.complete)return Promise.resolve();return new Promise(function(r){im.addEventListener('load',r,{once:true});im.addEventListener('error',r,{once:true});setTimeout(r,3000)})}));
   await new Promise(function(r){requestAnimationFrame(function(){requestAnimationFrame(r)})});
 }
-function measure(sheet){
-  var sr=sheet.getBoundingClientRect();
-  var width=Math.round(sheet.offsetWidth||sr.width);
-  var bottom=sr.top+Math.max(sheet.offsetHeight,sheet.scrollHeight,sr.height);
-  sheet.querySelectorAll('*').forEach(function(el){
-    if(el.matches&&el.matches(EDITOR_UI))return;
-    var cs=getComputedStyle(el);if(cs.display==='none'||cs.visibility==='hidden')return;
-    var r=el.getBoundingClientRect();if(isFinite(r.bottom)&&r.bottom>bottom)bottom=r.bottom;
-  });
-  var height=Math.max(sheet.offsetHeight,sheet.scrollHeight,Math.ceil(bottom-sr.top));
-  return{width:width,height:height};
-}
+function measure(sheet){\n  var r=sheet.getBoundingClientRect();\n  return{width:Math.round(sheet.offsetWidth||r.width),height:Math.round(sheet.offsetHeight||r.height)};\n}
 function downloadBlob(blob,name){var u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name+'.png';document.body.appendChild(a);a.click();setTimeout(function(){a.remove();URL.revokeObjectURL(u)},1500)}
 function canvasBlob(canvas){return new Promise(function(res,rej){try{canvas.toBlob(function(b){b?res(b):rej(new Error('PNG blob creation failed'))},'image/png')}catch(e){rej(e)}})}
 async function captureWithCanvas(sheet,size){
