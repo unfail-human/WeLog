@@ -70,3 +70,51 @@
   #sheet .wardrobe-gallery{grid-template-columns:repeat(auto-fit,190px)!important;gap:14px!important}
   #sheet .wardrobe-gallery-card{width:190px!important;height:246px!important}
 }
+
+/* Combined wardrobe sheet, one large reference image. */
+#sheet.sheet:has(.wardrobe-combined-card){
+  display:flex!important;
+  flex-direction:column!important;
+  gap:0!important;
+  height:auto!important;
+  max-height:none!important;
+  overflow:hidden!important;
+}
+#sheet.sheet:has(.wardrobe-combined-card)>.sheet-grid{
+  width:100%!important;
+  margin:0!important;
+  flex:0 0 auto!important;
+  border-radius:0!important;
+}
+#sheet.sheet:has(.wardrobe-combined-card)>.sheet-wardrobe{
+  position:static!important;
+  inset:auto!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:34px 52px 44px!important;
+  transform:none!important;
+  border-top:1px solid #ebe5dc!important;
+  border-radius:0 0 16px 16px!important;
+}
+#sheet .wardrobe-combined-card{
+  display:block!important;
+  position:relative!important;
+  width:min(760px,100%)!important;
+  height:440px!important;
+  margin:0 auto!important;
+  padding:0!important;
+  overflow:hidden!important;
+  transform:none!important;
+}
+#sheet .wardrobe-combined-card img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:contain!important;
+}
+@media(max-width:760px){
+  #sheet.sheet:has(.wardrobe-combined-card)>.sheet-wardrobe{padding:28px 24px 34px!important}
+  #sheet .wardrobe-combined-card{height:340px!important}
+}
