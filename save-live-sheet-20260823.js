@@ -14,7 +14,8 @@ async function save(){
     sheet.querySelectorAll(EDITOR_UI).forEach(function(el){hidden.push([el,el.style.display]);el.style.display='none'});
     sheet.style.transform='none';sheet.style.transformOrigin='top left';
     var rect=sheet.getBoundingClientRect(),width=Math.ceil(Math.max(sheet.scrollWidth,rect.width)),height=Math.ceil(Math.max(sheet.scrollHeight,rect.height));
-    var options={width:width,height:height,windowWidth:width,windowHeight:height,scrollX:0,scrollY:0,scale:1,useCORS:true,allowTaint:false,backgroundColor:getComputedStyle(sheet).backgroundColor||'#ffffff',logging:false,imageTimeout:2500};
+    var pageX=window.scrollX+rect.left,pageY=window.scrollY+rect.top;
+    var options={x:pageX,y:pageY,width:width,height:height,scrollX:0,scrollY:0,scale:1,useCORS:true,allowTaint:false,backgroundColor:getComputedStyle(sheet).backgroundColor||'#ffffff',logging:false,imageTimeout:2500};
     var dataUrl;
     try{var canvas=await html2canvas(sheet,options);dataUrl=canvas.toDataURL('image/png')}
     catch(first){if(!window.htmlToImage||!window.htmlToImage.toPng)throw first;dataUrl=await window.htmlToImage.toPng(sheet,{width:width,height:height,pixelRatio:1,cacheBust:false,backgroundColor:getComputedStyle(sheet).backgroundColor||'#ffffff'})}
@@ -23,6 +24,6 @@ async function save(){
   }catch(error){console.error('WeLog PNG save failed',error);alert('PNG 저장에 실패했습니다. 새로고침 후 다시 시도해 주세요.')}
   finally{hidden.forEach(function(x){x[0].style.display=x[1]});sheet.style.transform=oldTransform;sheet.style.transformOrigin=oldOrigin;button.disabled=false;button.textContent=label}
 }
-function install(){var old=document.getElementById('printBtn');if(!old)return;var button=old.cloneNode(true);old.replaceWith(button);button.dataset.liveSaveReady='17';button.addEventListener('click',function(e){e.preventDefault();e.stopImmediatePropagation();save()},true)}
+function install(){var old=document.getElementById('printBtn');if(!old)return;var button=old.cloneNode(true);old.replaceWith(button);button.dataset.liveSaveReady='18';button.addEventListener('click',function(e){e.preventDefault();e.stopImmediatePropagation();save()},true)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install);else install();setTimeout(install,500);
 })();
