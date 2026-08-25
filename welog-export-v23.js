@@ -1,6 +1,6 @@
 (function(){
 'use strict';
-var VERSION='28',STATE_KEY='welog-pair-sheet-v4';
+var VERSION='29',STATE_KEY='welog-pair-sheet-v4';
 function frame(){return new Promise(function(r){requestAnimationFrame(function(){requestAnimationFrame(r)})})}
 async function ready(sheet){if(document.fonts){try{await document.fonts.ready}catch(e){}}await Promise.all([].slice.call(sheet.querySelectorAll('img')).map(function(im){if(im.complete)return Promise.resolve();return new Promise(function(r){im.addEventListener('load',r,{once:true});im.addEventListener('error',r,{once:true});setTimeout(r,1800)})}));await frame()}
 function filename(){try{return((JSON.parse(localStorage.getItem(STATE_KEY)||'{}').pairName||'WeLog').trim()||'WeLog')+'.png'}catch(e){return'WeLog.png'}}
