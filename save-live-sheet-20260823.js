@@ -30,7 +30,10 @@ function installWardrobeSync(){
     if(busy)return;busy=true;
     try{
       var sheet=document.getElementById('sheet');if(!sheet)return;
-      var s=read(),src=s.wardrobeImage||'',enabled=s.wardrobeEnabled!==false&&!!src;
+      var s=read(),panelImage=document.querySelector('.wardrobe-combined-preview img'),panelCheck=document.querySelector('.wardrobe-combined-control [data-bool-path="wardrobeEnabled"]');
+      var src=(panelImage&&panelImage.getAttribute('src'))||s.wardrobeImage||'';
+      var enabled=panelCheck?panelCheck.checked:(s.wardrobeEnabled!==false&&!!src);
+      enabled=enabled&&!!src;
       var current=sheet.querySelector(':scope > .sheet-wardrobe');
       if(!enabled){if(current)current.remove();return}
       if(current&&current.querySelector('.wardrobe-combined-card img')&&current.querySelector('.wardrobe-combined-card img').getAttribute('src')===src)return;
@@ -47,6 +50,6 @@ function installWardrobeSync(){
   sync();setTimeout(sync,300);setTimeout(sync,1200);
 }
 
-function install(){var old=document.getElementById('printBtn');if(!old)return;var button=old.cloneNode(true);old.replaceWith(button);button.dataset.liveSaveReady='11';button.addEventListener('click',function(e){e.preventDefault();e.stopImmediatePropagation();save()},true)}
+function install(){var old=document.getElementById('printBtn');if(!old)return;var button=old.cloneNode(true);old.replaceWith(button);button.dataset.liveSaveReady='12';button.addEventListener('click',function(e){e.preventDefault();e.stopImmediatePropagation();save()},true)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){install();installWardrobeSync()});else{install();installWardrobeSync()}setTimeout(install,500);
 })();
