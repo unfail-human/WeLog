@@ -1,6 +1,6 @@
 (function(){
 'use strict';
-var VERSION='34',STATE_KEY='welog-pair-sheet-v4',MAX_PIXELS=16777216;
+var VERSION='35',STATE_KEY='welog-pair-sheet-v4',MAX_PIXELS=16777216;
 function frame(){return new Promise(function(resolve){requestAnimationFrame(function(){requestAnimationFrame(resolve)})})}
 function filename(){try{return((JSON.parse(localStorage.getItem(STATE_KEY)||'{}').pairName||'WeLog').trim()||'WeLog')+'.png'}catch(e){return'WeLog.png'}}
 function download(url){var a=document.createElement('a');a.href=url;a.download=filename();document.body.appendChild(a);a.click();a.remove()}
@@ -13,9 +13,12 @@ async function ready(root){
  await frame();
 }
 function makeClone(sheet){
- var width=sheet.offsetWidth,height=sheet.scrollHeight,clone=sheet.cloneNode(true),wrapper=document.createElement('div');
- clone.removeAttribute('id');
- clone.setAttribute('data-welog-export','');
+ var root=sheet.closest('.stage')||sheet.parentElement,width=sheet.offsetWidth,height=sheet.scrollHeight,rootWidth=root.offsetWidth,marker='data-welog-export-target',wrapper=document.createElement('div');
+ sheet.setAttribute(marker,'');
+ var rootClone=root.cloneNode(true);
+ sheet.removeAttribute(marker);
+ var clone=rootClone.querySelector('['+marker+']');
+ clone.removeAttribute(marker);
  clone.style.setProperty('transform','none','important');
  clone.style.setProperty('transform-origin','top left','important');
  clone.style.setProperty('margin','0','important');
@@ -24,8 +27,11 @@ function makeClone(sheet){
  clone.style.setProperty('max-width',width+'px','important');
  clone.style.setProperty('height','auto','important');
  clone.style.setProperty('min-height',height+'px','important');
+ rootClone.style.setProperty('width',rootWidth+'px','important');
+ rootClone.style.setProperty('min-width',rootWidth+'px','important');
+ rootClone.style.setProperty('max-width',rootWidth+'px','important');
  wrapper.style.position='fixed';wrapper.style.left='0';wrapper.style.top='0';wrapper.style.width='0';wrapper.style.height='0';wrapper.style.overflow='hidden';wrapper.style.pointerEvents='none';wrapper.style.zIndex='-2147483647';
- wrapper.appendChild(clone);document.body.appendChild(wrapper);
+ wrapper.appendChild(rootClone);document.body.appendChild(wrapper);
  return{wrapper:wrapper,clone:clone};
 }
 function ignore(node){return !(node&&node.classList&&node.matches('.direct-bounds-overlay-fixed,.welog-layout-overlay-fixed,.welog-layout-hud,.st-toolbar,.st-resize,.st-rotate,.st-v2-lock,.st-v2-del,.st-v2-resize,.direct-crop-ui,.guide-line'))}
