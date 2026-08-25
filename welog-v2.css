@@ -48,3 +48,18 @@
 .preview-dialog .dialog-body{display:grid;place-items:center;overflow:auto;background:var(--work);padding:22px}
 .preview-frame{display:grid;place-items:center;min-width:100%}
 .preview-frame .sheet{position:relative!important;left:auto!important;top:auto!important;box-shadow:0 16px 50px #40372d22}
+
+/* vertical image list */
+.inline-gallery{grid-template-columns:1fr;gap:9px}
+.inline-gallery button{grid-template-columns:58px minmax(0,1fr);grid-template-rows:58px;align-items:center;gap:12px;padding:7px 10px;text-align:left}
+.inline-gallery img,.inline-gallery i{width:58px;height:58px}
+.inline-gallery span{font-size:10px;font-weight:700;text-align:left}
+
+/* more readable character columns */
+.profile{padding-left:32px;padding-right:32px}
+.profile-name{height:82px}.profile-name h2{font-size:29px}.profile-name p{margin-top:7px;font-size:13px}
+.palette{gap:13px;margin:19px 0 24px}.palette button{width:43px;height:43px}
+.quote{min-height:88px;margin-bottom:24px;padding:18px 19px;font-size:15px;line-height:1.75}
+.facts{height:82px}.fact span{margin-bottom:8px;font-size:9px}.fact b{font-size:13px;line-height:1.35}
+.text-section{margin-top:29px}.text-section h3{margin-bottom:13px;font-size:17px}
+.text-section li{margin:10px 0;padding-left:18px;font-size:14px;line-height:1.65}.text-section li:before{width:6px;height:6px}
