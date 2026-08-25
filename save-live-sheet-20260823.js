@@ -15,13 +15,13 @@ async function save(){
   try{
     await ready(sheet);
     sheet.querySelectorAll(EDITOR_UI).forEach(function(el){el.dataset.exportDisplay=el.style.display;el.style.display='none'});
-    var canvas=await html2canvas(sheet,{scale:2,useCORS:true,allowTaint:false,backgroundColor:null,logging:false,imageTimeout:30000,scrollX:-window.scrollX,scrollY:-window.scrollY});
+    var canvas;try{canvas=await html2canvas(sheet,{scale:2,useCORS:true,allowTaint:false,backgroundColor:getComputedStyle(sheet).backgroundColor||'#ffffff',logging:false,imageTimeout:30000});}catch(first){if(!window.htmlToImage||!window.htmlToImage.toCanvas)throw first;canvas=await window.htmlToImage.toCanvas(sheet,{pixelRatio:2,cacheBust:true,backgroundColor:getComputedStyle(sheet).backgroundColor||'#ffffff',filter:function(node){return !(node.matches&&node.matches(EDITOR_UI))}});}
     sheet.querySelectorAll(EDITOR_UI).forEach(function(el){el.style.display=el.dataset.exportDisplay||'';delete el.dataset.exportDisplay});
     var value=await blob(canvas),url=URL.createObjectURL(value),a=document.createElement('a'),name=((state().pairName||'WeLog').trim()||'WeLog');
     a.href=url;a.download=name+'.png';document.body.appendChild(a);a.click();setTimeout(function(){a.remove();URL.revokeObjectURL(url)},1500);
   }catch(error){console.error('WeLog PNG save failed',error);alert('PNG 저장에 실패했습니다. 새로고침 후 다시 시도해 주세요.')}
   finally{sheet.querySelectorAll(EDITOR_UI).forEach(function(el){el.style.display=el.dataset.exportDisplay||'';delete el.dataset.exportDisplay});button.disabled=false;button.textContent=label}
 }
-function install(){var old=document.getElementById('printBtn');if(!old)return;var button=old.cloneNode(true);old.replaceWith(button);button.dataset.liveSaveReady='9';button.addEventListener('click',function(e){e.preventDefault();e.stopImmediatePropagation();save()},true)}
+function install(){var old=document.getElementById('printBtn');if(!old)return;var button=old.cloneNode(true);old.replaceWith(button);button.dataset.liveSaveReady='10';button.addEventListener('click',function(e){e.preventDefault();e.stopImmediatePropagation();save()},true)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install);else install();setTimeout(install,500);
 })();
