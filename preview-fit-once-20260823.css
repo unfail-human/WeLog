@@ -118,3 +118,47 @@
   #sheet.sheet:has(.wardrobe-combined-card)>.sheet-wardrobe{padding:28px 24px 34px!important}
   #sheet .wardrobe-combined-card{height:340px!important}
 }
+
+/* Outfit reference lives in row 2 of the existing three-column sheet grid. */
+#sheet.sheet:has(.sheet-grid>.sheet-wardrobe){
+  display:block!important;
+  height:auto!important;
+  min-height:820px!important;
+  max-height:none!important;
+  overflow:hidden!important;
+}
+#sheet .sheet-grid:has(>.sheet-wardrobe){
+  display:grid!important;
+  grid-template-rows:auto auto!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  overflow:visible!important;
+  border-radius:0!important;
+}
+#sheet .sheet-grid>.sheet-wardrobe{
+  grid-column:1/-1!important;
+  grid-row:2!important;
+  position:relative!important;
+  inset:auto!important;
+  display:block!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+  height:auto!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:34px 52px 44px!important;
+  transform:none!important;
+  border-top:1px solid #ebe5dc!important;
+  border-radius:0 0 16px 16px!important;
+  background:#fff!important;
+  box-sizing:border-box!important;
+  overflow:visible!important;
+}
+#sheet .sheet-grid>.sheet-wardrobe .wardrobe-combined-card{
+  display:block!important;
+  width:min(760px,100%)!important;
+  height:440px!important;
+  margin:0 auto!important;
+}
