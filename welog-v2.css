@@ -109,8 +109,8 @@ body{background:#f6f3ee}
 @media(max-width:1100px){.app{grid-template-columns:minmax(0,1fr) 340px;gap:16px;padding:16px}.topbar{padding:0 18px}.top-actions{gap:7px}}
 
 /* extra bottom breathing room */
-.sheet-holder,.sheet{height:1060px}
-.sheet>.bottom-notes{bottom:48px}
+.sheet-holder,.sheet{height:1020px}
+.sheet>.bottom-notes{bottom:40px}
 
 /* direct sticker upload and simple gallery */
 .sticker-gallery{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
