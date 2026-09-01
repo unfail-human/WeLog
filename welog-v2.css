@@ -211,3 +211,27 @@ body{background:#f6f3ee}
 .photo-strip:nth-child(1) .photo-slot:last-of-type,.photo-strip:nth-child(2) .photo-slot:first-of-type{border-radius:8px 32px 8px 32px}
 .photo-slot img{position:absolute;display:block;width:100%;height:100%;max-width:none;object-fit:contain;transform-origin:center;will-change:transform}
 .photo-slot .image-empty{font-size:9px}
+
+/* v28: keep both character profiles and use the center for six outfits */
+.sheet[data-layout="photo"]{background:var(--paper,#fff)}
+.sheet[data-layout="photo"] .sheet-grid{grid-template-columns:var(--col-left,310px) minmax(0,var(--col-center,780px)) var(--col-right,310px)}
+.sheet[data-layout="photo"] .photo-title{left:390px;right:390px;top:34px}
+.sheet[data-layout="photo"] .photo-title h1{font-size:29px}
+.sheet[data-layout="photo"] .profile{padding:66px 38px 42px}
+.sheet[data-layout="photo"] .profile-name{height:70px}
+.sheet[data-layout="photo"] .profile-name h2{font-size:25px}
+.sheet[data-layout="photo"] .portrait{height:275px;border-radius:10px;box-shadow:0 5px 16px #312b261c,0 0 0 1px #312b2612}
+.sheet[data-layout="photo"] .palette{gap:11px;margin:16px 0 20px}
+.sheet[data-layout="photo"] .palette button{width:40px;height:40px}
+.sheet[data-layout="photo"] .quote{min-height:74px;margin-bottom:18px;padding:15px 17px}
+.sheet[data-layout="photo"] .facts{height:70px}
+.sheet[data-layout="photo"] .text-section{margin-top:22px}
+.sheet[data-layout="photo"] .text-section li{margin:7px 0;font-size:12px;line-height:1.55}
+.photo-center{position:relative;min-width:0}
+.photo-center .photo-board{position:absolute;left:18px;right:18px;top:112px;bottom:74px;display:grid;grid-template-rows:repeat(3,minmax(0,1fr));gap:14px}
+.photo-center .photo-strip{padding:10px;gap:10px;border-radius:12px!important;box-shadow:0 5px 15px #473c3018}
+.photo-center .photo-slot{border-radius:8px!important}
+.default-outfit-picker{border-color:#d7c8b3;background:#fff}
+.default-outfit-badge{position:absolute;right:9px;top:9px;z-index:4;padding:7px 10px;border-radius:999px;background:#302d29;color:#fff;font-size:9px;font-weight:800;letter-spacing:.04em;box-shadow:0 4px 12px #0003;pointer-events:none}
+.default-list-badge{position:absolute;right:10px;top:50%;transform:translateY(-50%);padding:4px 7px;border-radius:999px;background:#302d29;color:#fff;font-size:7px;font-style:normal;font-weight:700}
+.inline-gallery [data-main-image]{position:relative}
