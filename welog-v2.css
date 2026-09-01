@@ -253,3 +253,8 @@ body{background:#f6f3ee}
 .controls[data-layout="photo"] .inline-gallery button:after{display:none}
 .controls[data-layout="photo"] .inline-gallery img,.controls[data-layout="photo"] .inline-gallery i{width:100%;height:100%;border-radius:8px;object-fit:contain}
 .controls[data-layout="photo"] .inline-gallery span,.controls[data-layout="photo"] .default-list-badge{display:none}
+
+/* v30: photo layout follows the adjustable column ratios */
+.sheet[data-layout="photo"] .sheet-grid{grid-template-columns:var(--col-left,310px) minmax(0,var(--col-center,780px)) var(--col-right,310px)}
+.sheet[data-layout="photo"] .profile{padding-left:38px;padding-right:38px}
+.sheet[data-layout="photo"] .photo-title{left:390px;right:390px}
