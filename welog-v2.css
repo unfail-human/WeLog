@@ -172,3 +172,25 @@ body{background:#f6f3ee}
 .crop-viewport img{position:absolute;width:100%;height:100%;max-width:none;object-fit:contain;transform-origin:center;will-change:transform}
 .crop-viewport .crop-empty{inset:0}
 .crop-stage>.crop-outline{display:none}
+
+/* v26: extensible layout presets */
+.layout-canvas{position:absolute;inset:0}
+.layout-picker{border-color:#cfc2af;background:linear-gradient(145deg,#fff,#faf5ec)}
+.layout-picker .group-title small{color:#9b9287;font-size:8px;font-weight:400}
+.sheet[data-layout="photo"] .sheet-grid{grid-template-columns:270px 860px 270px}
+.sheet[data-layout="photo"] .pair-title{left:430px;right:430px;top:25px}
+.sheet[data-layout="photo"] .pair-title h1{font-size:27px}
+.sheet[data-layout="photo"] .profile{padding:76px 24px 38px}
+.sheet[data-layout="photo"] .profile-name{height:62px}
+.sheet[data-layout="photo"] .profile-name h2{font-size:22px}
+.sheet[data-layout="photo"] .portrait{height:340px;border-radius:14px;box-shadow:0 10px 28px #312b2628,0 0 0 1px #312b2615}
+.sheet[data-layout="photo"] .palette{gap:8px;margin:13px 0 15px}
+.sheet[data-layout="photo"] .palette button{width:34px;height:34px}
+.sheet[data-layout="photo"] .quote{min-height:62px;margin-bottom:13px;padding:12px 14px}
+.sheet[data-layout="photo"] .facts{height:60px}
+.sheet[data-layout="photo"] .text-section{margin-top:14px}
+.sheet[data-layout="photo"] .text-section li{margin:4px 0;font-size:10px;line-height:1.4}
+.sheet[data-layout="photo"] .center-zone{padding:98px 15px 72px}
+.sheet[data-layout="photo"] .center-frame{height:835px}
+.sheet[data-layout="photo"] .center-images{gap:14px}
+.sheet[data-layout="photo"] .center-image{border-radius:16px}
